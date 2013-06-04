@@ -1,4 +1,7 @@
-export VIRTUAL_ENV_DISABLE_PROMPT=disabled
+# Show an asterisk by git branch if working directory is dirty/has changes
+export GIT_PS1_SHOWDIRTYSTATE=true
+# We override the default venv display, so disable it
+export VIRTUAL_ENV_DISABLE_PROMPT=true
 
 # Setup z (https://github.com/rupa/z)
 source /home/they4kman/software/z/z.sh
