@@ -5,6 +5,8 @@ export VIRTUAL_ENV_DISABLE_PROMPT=true
 
 # Setup z (https://github.com/rupa/z)
 source /home/they4kman/software/z/z.sh
+# YOU DON'T KNOW WHO MY SYMLINKS REALLY ARE
+export _Z_NO_RESOLVE_SYMLINKS=true
 
 # Displays the current activated virtualenv
 __venv_ps1 ()
@@ -20,6 +22,7 @@ alias gm="git co master"
 alias gd="git diff"
 alias gdc="git diff --cached"
 alias gaa="git add --all"
+alias gmm="git merge master"
 
 # Picked up from Dan @ StyleSeat
 alias pmp="python manage.py"
