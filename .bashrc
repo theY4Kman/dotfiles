@@ -1,10 +1,13 @@
+REPO_DIR=$( dirname "${BASH_SOURCE[0]}" )
+
 # Show an asterisk by git branch if working directory is dirty/has changes
 export GIT_PS1_SHOWDIRTYSTATE=true
 # We override the default venv display, so disable it
 export VIRTUAL_ENV_DISABLE_PROMPT=true
 
-# Setup z (https://github.com/rupa/z)
-source /home/they4kman/software/z/z.sh
+# Setup z (https://github.com/theY4Kman/z -- using my own version, which also prints
+#          the dir being cd'd to, so it can be used like so: pushd `z mydir`)
+source ${REPO_DIR}/z/z.sh
 # YOU DON'T KNOW WHO MY SYMLINKS REALLY ARE
 export _Z_NO_RESOLVE_SYMLINKS=true
 
@@ -65,7 +68,7 @@ function svn_branch
 }
 
 # Looks like:
-#   #17 18:47:23 2013/05/23 ~/programming/code-tests (vcs-branch) [myvirtualenv]
+#   #17 18:47:23 2013/05/23 ~/programming/code-tests (vcs-branch *) [myvirtualenv]
 # Benefits:
 #  - Begins with a hash, so it can be copied accidentally without bollocksing up commands
 #  - Ends with a newline, so commands don't get smushed easily
@@ -73,6 +76,10 @@ function svn_branch
 #  - After Enter is hit at prompt, a line is printed with the date and time
 #    When the command completes, the PS1 will be printed with date and time,
 #    Allowing the measurement of how long a command takes
+#  - Each ### START ### line prints the command executed in expanded form,
+#    revealing what's actually being run behind aliases and the such.
+# Disadvantages:
+#  - SO MANY LINES, ALWAYS PRINTING, AHHHHHHHHHH
 # Note: __git_ps1 should be installed with git bash completion
 export PS1='\n#\e[0;31m\#\e[m \e[1;32m\t\e[m \e[0;32m\D{%Y/%m/%d}\e[m \e[1;33m\w\e[m\e[0;35m$(__git_ps1)$(svn_branch)\e[m \e[0;33m$(__venv_ps1)\e[m\n`echo \# > /tmp/.$$.cmdnum`'
  
