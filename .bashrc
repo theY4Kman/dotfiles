@@ -1,5 +1,9 @@
 REPO_DIR=$( dirname "${BASH_SOURCE[0]}" )
 
+# Disables history expansion (so I can put exclamation marks in double-quoted 
+# commit messages without bash complaining all over me. Pfft, LIKE I CARE, BASH!)
+set +H
+
 # Show an asterisk by git branch if working directory is dirty/has changes
 export GIT_PS1_SHOWDIRTYSTATE=true
 # We override the default venv display, so disable it
@@ -10,6 +14,14 @@ export VIRTUAL_ENV_DISABLE_PROMPT=true
 source ${REPO_DIR}/z/z.sh
 # YOU DON'T KNOW WHO MY SYMLINKS REALLY ARE
 export _Z_NO_RESOLVE_SYMLINKS=true
+
+# Convenience function for pushd `z ...`
+function pushz() {
+    cd=`z $*`
+    [ "$cd" ] && pushd $cd
+}
+# Some symmetry
+alias popz=popd
 
 # Displays the current activated virtualenv
 __venv_ps1 ()
