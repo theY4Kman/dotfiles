@@ -79,6 +79,16 @@ function svn_branch
   fi
 }
 
+# Get __git_ps1 if we don't have it
+command -v __git_ps1 >/dev/null 2>&1
+if [ $? != 0 ]; then
+  SCRIPT_PATH=${REPO_DIR}/git-prompt.sh
+  if [ ! -e $SCRIPT_PATH ]; then
+    wget https://github.com/git/git/raw/master/contrib/completion/git-prompt.sh -O $SCRIPT_PATH
+  fi
+  source $SCRIPT_PATH
+fi
+
 # Looks like:
 #   #17 18:47:23 2013/05/23 ~/programming/code-tests (vcs-branch *) [myvirtualenv]
 # Benefits:
@@ -92,7 +102,6 @@ function svn_branch
 #    revealing what's actually being run behind aliases and the such.
 # Disadvantages:
 #  - SO MANY LINES, ALWAYS PRINTING, AHHHHHHHHHH
-# Note: __git_ps1 should be installed with git bash completion
 export PS1='\n#\e[0;31m\#\e[m \e[1;32m\t\e[m \e[0;32m\D{%Y/%m/%d}\e[m \e[1;33m\w\e[m\e[0;35m$(__git_ps1)$(svn_branch)\e[m \e[0;33m$(__venv_ps1)\e[m\n`echo \# > /tmp/.$$.cmdnum`'
  
 preexec_invoke_exec () {
