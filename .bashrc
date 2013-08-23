@@ -31,7 +31,14 @@ __venv_ps1 ()
     fi
 }
 
-# git-related aliases
+###########
+# ALIASES #
+###########
+
+# general
+alias grep="grep --color=auto -i"
+
+# git-related
 alias gs="git status"
 alias gm="git co master"
 alias gd="git diff"
@@ -89,8 +96,13 @@ if [ $? != 0 ]; then
   source $SCRIPT_PATH
 fi
 
+clean_hostname=${HOSTNAME//[^a-zA-Z0-9]/}
+fourth=`expr ${#clean_hostname} / 4`
+h=$clean_hostname
+hstn=${h:0:1}${h:$fourth:1}${h:$fourth*2:1}${h:$fourth*3:1}
+
 # Looks like:
-#   #17 18:47:23 2013/05/23 ~/programming/code-tests (vcs-branch *) [myvirtualenv]
+#   #17 hstn 18:47:23 2013/05/23 ~/programming/code-tests (vcs-branch *) [myvirtualenv]
 # Benefits:
 #  - Begins with a hash, so it can be copied accidentally without bollocksing up commands
 #  - Ends with a newline, so commands don't get smushed easily
@@ -100,9 +112,11 @@ fi
 #    Allowing the measurement of how long a command takes
 #  - Each ### START ### line prints the command executed in expanded form,
 #    revealing what's actually being run behind aliases and the such.
+#  - 'hstn' is 4 a string of 4 chars taken from the hostname at evenly spaced positions.
+#    This is to display a unique identifier for the machine without extending the PS1 much
 # Disadvantages:
 #  - SO MANY LINES, ALWAYS PRINTING, AHHHHHHHHHH
-export PS1='\n#\e[0;31m\#\e[m \e[1;32m\t\e[m \e[0;32m\D{%Y/%m/%d}\e[m \e[1;33m\w\e[m\e[0;35m$(__git_ps1)$(svn_branch)\e[m \e[0;33m$(__venv_ps1)\e[m\n`echo \# > /tmp/.$$.cmdnum`'
+export PS1='\n#\e[0;31m\#\e[m $hstn \e[1;32m\t\e[m \e[0;32m\D{%Y/%m/%d}\e[m \e[1;33m\w\e[m\e[0;35m$(__git_ps1)$(svn_branch)\e[m \e[0;33m$(__venv_ps1)\e[m\n`echo \# > /tmp/.$$.cmdnum`'
  
 preexec_invoke_exec () {
     [ -n "$COMP_LINE" ] && return  # do nothing if completing
@@ -111,7 +125,7 @@ preexec_invoke_exec () {
     if [[ "$BASH_COMMAND" == _z* ]] || [[ -z "$BASH_COMMAND" ]]; then
         return
     fi
-    echo -e '#\e[0;31m'`cat /tmp/.$$.cmdnum`'\e[m' '\e[1;32m'`date +%T` '\e[0;32m'`date +'%Y/%m/%d'`'\e[m ####### START ###### \e[0;34m'$BASH_COMMAND'\e[m'
+    echo -e '#\e[0;31m'`cat /tmp/.$$.cmdnum`'\e[m' $hstn '\e[1;32m'`date +%T` '\e[0;32m'`date +'%Y/%m/%d'`'\e[m ####### START ###### \e[0;34m'$BASH_COMMAND'\e[m'
 }
 trap 'preexec_invoke_exec' DEBUG
 
