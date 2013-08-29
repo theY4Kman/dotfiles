@@ -53,6 +53,16 @@ alias djp="django-admin.py"
 
 export EDITOR=vim
 
+
+# I've seen the PROMPT_COMMAND get filled when root, and it ends up printing many
+# unnecessary lines, and I don't want that clutter. The command in particular
+# (printf "" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/~}") doesn't seem to print
+# anything, anyways. So, if we're root, I'm going to clear PROMPT_COMMAND
+if [[ $EUID == 0 ]] && [[ $PROMPT_COMMAND == printf* ]]; then
+    export PROMPT_COMMAND=""
+fi
+
+
 function svn_branch
 {
   if [ ! -d .svn ]; then
