@@ -1,0 +1,17 @@
+# To utilize this file without copying or symlinking to ~/.gitconfig, use:
+# [include]
+#     path = path/to/yak-setup/.gitconfig
+[gui]
+    color = true
+[color]
+    ui = auto
+[alias]
+    co = checkout
+    ci = commit
+    unstash = stash pop
+    us = stash pop
+    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+[push]
+    default = simple
+[core]
+    attributesfile = .gitattributes
