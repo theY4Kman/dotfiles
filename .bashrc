@@ -11,7 +11,10 @@ export VIRTUAL_ENV_DISABLE_PROMPT=true
 
 # Setup z (https://github.com/theY4Kman/z -- using my own version, which also prints
 #          the dir being cd'd to, so it can be used like so: pushd `z mydir`)
-source ${REPO_DIR}/z/z.sh
+Z_PATH=${REPO_DIR}/z/z.sh
+if [ -e $Z_PATH ]; then
+    source $Z_PATH
+fi
 # YOU DON'T KNOW WHO MY SYMLINKS REALLY ARE
 export _Z_NO_RESOLVE_SYMLINKS=true
 
