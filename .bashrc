@@ -1,4 +1,4 @@
-REPO_DIR=$( dirname "${BASH_SOURCE[0]}" )
+REPO_DIR=$( cd $(dirname "${BASH_SOURCE[0]}") ; pwd )
 
 # Disables history expansion (so I can put exclamation marks in double-quoted 
 # commit messages without bash complaining all over me. Pfft, LIKE I CARE, BASH!)
