@@ -24,7 +24,7 @@ echo
 read -n 1 -r -p 'Kill these processes? [y/N] '
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-    kill $(PIDS[@])
+    kill ${PIDS[@]}
 else
     exit
 fi
