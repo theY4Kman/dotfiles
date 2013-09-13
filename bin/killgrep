@@ -1,0 +1,30 @@
+#!/bin/bash
+SEARCH="$*"
+
+if [ -z "$SEARCH" ]; then
+    echo "ERROR: Pattern required"
+    exit
+fi
+
+PATTERN=[${SEARCH:0:1}]${SEARCH:1}
+PIDS=()
+
+while read line
+do
+    echo $line
+    PIDS+=($(awk '{ print $1 }' <<< $line))
+
+# Well, this shit below is fuckin weird.
+# Piping into the `while` (e.g. `echo hi | while ...`) opens a subshell, so the
+# loop body can't actually write to $PIDS. Had to shove this shit here.
+done < <(ps ax -o pid,command | column | grep $PATTERN)
+
+# Confirm the kill
+echo
+read -n 1 -r -p 'Kill these processes? [y/N] '
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    kill $(PIDS[@])
+else
+    exit
+fi
