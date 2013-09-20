@@ -31,6 +31,10 @@ alias popz=popd
 # general
 alias grep="grep --color=auto -i"
 
+# Package management
+alias sai="sudo apt-get install"
+alias syi="sudo yum install"
+
 # git-related
 alias gs="git status"
 alias gm="git co master"
