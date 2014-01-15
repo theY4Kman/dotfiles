@@ -4,6 +4,9 @@ REPO_DIR=$( cd $(dirname "${BASH_SOURCE[0]}") ; pwd )
 # commit messages without bash complaining all over me. Pfft, LIKE I CARE, BASH!)
 set +H
 
+# vim bindings, yeah!
+set -o vi
+
 # Setup z (https://github.com/theY4Kman/z -- using my own version, which also prints
 #          the dir being cd'd to, so it can be used like so: pushd `z mydir`)
 Z_PATH=${REPO_DIR}/z/z.sh
