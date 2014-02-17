@@ -167,7 +167,7 @@ hstn=${h:0:1}${h:$fourth:1}${h:$fourth*2:1}${h:$fourth*3:1}
 #    This is to display a unique identifier for the machine without extending the PS1 much
 # Downsides:
 #  - SO MANY LINES, ALWAYS PRINTING, AHHHHHHHHHH-ee couldn't give a shit.
-export PS1='\n#\e[0;31m\#\e[m $hstn \e[1;32m\t\e[m \e[0;32m\D{%Y/%m/%d}\e[m \e[1;33m\w\e[m\e[0;35m$(__git_ps1)$(svn_branch)\e[m \e[0;33m$(__venv_ps1)\e[m\n`echo \# > /tmp/.$$.cmdnum`'
+export PS1='\n# \e[0;31m\#\e[m $hstn \e[1;32m\t\e[m \e[0;32m\D{%Y/%m/%d}\n\e[m# \e[1;33m\w\e[m\n#\e[0;35m$(__git_ps1)$(svn_branch)\e[m \e[0;33m$(__venv_ps1)\e[m\n`echo \# > /tmp/.$$.cmdnum`'
 
 
 ##############
@@ -197,7 +197,7 @@ preexec_invoke_exec () {
     if [[ "$BASH_COMMAND" == _z* ]] || [[ -z "$BASH_COMMAND" ]]; then
         return
     fi
-    echo -e '#\e[0;31m'`cat /tmp/.$$.cmdnum 2>/dev/null || echo 1`'\e[m' $hstn '\e[1;32m'`date +%T` '\e[0;32m'`date +'%Y/%m/%d'`'\e[m ####### START ###### \e[0;34m'$BASH_COMMAND'\e[m'
+    echo -e '# \e[0;31m'`cat /tmp/.$$.cmdnum 2>/dev/null || echo 1`'\e[m' $hstn '\e[1;32m'`date +%T` '\e[0;32m'`date +'%Y/%m/%d'`'\e[m ####### START ###### \e[0;34m'$BASH_COMMAND'\e[m'
 }
 trap 'preexec_invoke_exec' DEBUG
 
