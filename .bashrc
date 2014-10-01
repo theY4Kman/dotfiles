@@ -40,11 +40,12 @@ alias syi="sudo yum install"
 
 # git-related
 alias gs="git status"
-alias gm="git co master"
+alias gm="git checkout master"
 alias gd="git diff"
 alias gdc="git diff --cached"
 alias gaa="git add --all"
 alias gmm="git merge master"
+alias gfa="git fetch --all"
 
 # Picked up from Dan @ StyleSeat
 alias pmp="python manage.py"
