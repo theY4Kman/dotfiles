@@ -198,7 +198,7 @@ preexec_invoke_exec () {
     if [[ "$BASH_COMMAND" == _z* ]] || [[ -z "$BASH_COMMAND" ]]; then
         return
     fi
-    echo -e '# \e[0;31m'`cat /tmp/.$$.cmdnum 2>/dev/null || echo 1`'\e[m' $hstn '\e[1;32m'`date +%T` '\e[0;32m'`date +'%Y/%m/%d'`'\e[m ####### START ###### \e[0;34m'$BASH_COMMAND'\e[m'
+    echo -e '# \e[0;31m'`cat /tmp/.$$.cmdnum 2>/dev/null || echo 1`'\e[m' $hstn '\e[1;32m'`date +%T` '\e[0;32m'`date +'%Y/%m/%d'`'\e[m ####### START ###### \e[0;34m '$BASH_COMMAND'\e[m'
 }
 trap 'preexec_invoke_exec' DEBUG
 
