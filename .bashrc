@@ -91,7 +91,10 @@ alias pmp="python manage.py"
 # Matching hivelocity
 alias djp="django-admin.py"
 
-
+# terraform, thx keene
+alias tf=terraform
+alias terraform-graph='dot -Tpng <(terraform graph) | open -a Preview.app -f'
+alias tf-graph=terraform-graph
 
 
 ###########
