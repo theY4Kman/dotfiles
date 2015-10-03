@@ -28,6 +28,10 @@ shopt -s cmdhist
 ############
 # vim bindings, yeah!
 set -o vi
+# Fix Ctrl-A and Ctrl-E
+bind '\C-a:beginning-of-line'
+bind '\C-e:end-of-line'
+
 
 #####
 # Z #
