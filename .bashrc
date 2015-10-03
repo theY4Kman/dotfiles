@@ -22,9 +22,16 @@ HISTTIMEFORMAT='%F %T '
 # Condense multi-line commands to one line
 shopt -s cmdhist
 
+
+############
+# VIM MODE #
+############
 # vim bindings, yeah!
 set -o vi
 
+#####
+# Z #
+#####
 # Setup z (https://github.com/theY4Kman/z -- using my own version, which also prints
 #          the dir being cd'd to, so it can be used like so: pushd `z mydir`)
 Z_PATH=${REPO_DIR}/z/z.sh
@@ -33,6 +40,11 @@ if [ -e $Z_PATH ]; then
 fi
 # YOU DON'T KNOW WHO MY SYMLINKS REALLY ARE
 export _Z_NO_RESOLVE_SYMLINKS=true
+
+
+#########################
+# CONVENIENCE FUNCTIONS #
+#########################
 
 # Convenience function for pushd `z ...`
 function pushz() {
