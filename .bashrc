@@ -4,6 +4,24 @@ REPO_DIR=$( cd $(dirname "${BASH_SOURCE[0]}") ; pwd )
 # commit messages without bash complaining all over me. Pfft, LIKE I CARE, BASH!)
 set +H
 
+
+###########
+# HISTORY #
+###########
+
+# Append to .bash_history on session close, instead of overwriting
+shopt -s histappend
+
+# Essentially disable history file truncation
+HISTFILESIZE=1000000
+HISTSIZE=1000000
+
+# Store full date and time for each history line
+HISTTIMEFORMAT='%F %T '
+
+# Condense multi-line commands to one line
+shopt -s cmdhist
+
 # vim bindings, yeah!
 set -o vi
 
