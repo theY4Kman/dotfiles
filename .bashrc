@@ -98,6 +98,13 @@ alias terraform-graph='dot -Tpng <(terraform graph) | open -a Preview.app -f'
 alias tf-graph=terraform-graph
 
 
+#################
+# DRUNK ALIASES #
+#################
+
+alias sssh="ssh"
+
+
 ###########
 # EXPORTS #
 ###########
