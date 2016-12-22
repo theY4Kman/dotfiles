@@ -214,6 +214,16 @@ hstn=${h:0:1}${h:$fourth:1}${h:$fourth*2:1}${h:$fourth*3:1}
 export PS1='\n# \e[0;31m\#\e[m $hstn \e[1;32m\t\e[m \e[0;32m\D{%Y/%m/%d}\n\e[m# \e[1;33m\w\e[m\n#\e[0;35m$(__git_ps1)$(svn_branch)\e[m \e[0;33m$(__venv_ps1)\e[m\n`echo \# > /tmp/.$$.cmdnum`'
 
 
+###########
+# CLEANUP #
+###########
+
+clean_ps1_cmdnum_file() {
+    rm -f /tmp/.$$.cmdnum 2>/dev/null;
+}
+trap 'clean_ps1_cmdnum_file' EXIT;
+
+
 ##############
 # START LINE #
 ##############
