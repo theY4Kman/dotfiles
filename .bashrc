@@ -72,6 +72,7 @@ function mkcd() {
 
 # general
 alias grep="grep --color=auto -i"
+alias xargs="xargs -L1"  # why this isn't default, idfk
 
 # Package management
 alias sai="sudo apt-get install"
