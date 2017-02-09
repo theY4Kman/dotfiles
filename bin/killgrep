@@ -1,30 +1,52 @@
 #!/bin/bash
-SEARCH="$*"
+script_ppid="$PPID"
+script_pid="$$"
+search="$*"
 
-if [ -z "$SEARCH" ]; then
+if [ -z "$search" ]; then
     echo "ERROR: Pattern required"
     exit
 fi
 
-PATTERN=[${SEARCH:0:1}]${SEARCH:1}
-PIDS=()
+pattern="[${search:0:1}]${search:1}"
+pids=()
+lines=("PID"$'\t'" COMMAND")
+
 
 while read line
 do
-    echo $line
-    PIDS+=($(awk '{ print $1 }' <<< $line))
+    pid=($(awk '{ print $1 }' <<< $line))
+    ppid=($(awk '{ print $2 }' <<< $line))
+    if [ "$script_pid" -eq "$ppid" ] || [ "$script_ppid" -eq "$ppid" ]; then
+        # Don't print our own processes
+        continue
+    fi
 
-# Well, this shit below is fuckin weird.
+    pids+=($pid)
+    lines+=("$(echo $line | awk '{ $2="\t"; print }')")
+
 # Piping into the `while` (e.g. `echo hi | while ...`) opens a subshell, so the
-# loop body can't actually write to $PIDS. Had to shove this shit here.
-done < <(ps ax -o pid,command | column | grep $PATTERN)
+# loop body can't actually write to $pids. Had to shove this shit here.
+done < <(ps ax -o pid,ppid,command | grep $pattern)
+
+
+# Bail out if no processes found
+if [ ${#pids[@]} -eq 0 ]; then
+    >&2 echo No matching processes found
+    exit
+fi
+
+
+# Print all matching processes with columns
+printf "%s\n" "${lines[@]}" | column -c 2
+
 
 # Confirm the kill
 echo
 read -n 1 -r -p 'Kill these processes? [y/N] '
-if [[ $REPLY =~ ^[Yy]$ ]]
+if [[ $reply =~ ^[Yy]$ ]]
 then
-    kill ${PIDS[@]}
+    kill ${pids[@]}
 else
     exit
 fi
