@@ -103,6 +103,7 @@ alias tf-graph=terraform-graph
 #################
 
 alias sssh="ssh"
+alias got="git"
 
 
 ###########
