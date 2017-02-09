@@ -187,6 +187,14 @@ if [ $? != 0 ]; then
 fi
 
 
+# Enable Django manage.py bash completion
+. ${REPO_DIR}/django_bash_completion.sh
+
+
+# Enable bash completion for aliases (magic!)
+. ${REPO_DIR}/bash_alias_completion.sh
+
+
 # I use Terminator, usually having 6+ terminals open in the same window. I SSH
 # into a lot of boxes, and as they now all use this .bashrc, their PS1s are all
 # the same. I needed a way to differentiate machines, but as my PS1 was already
