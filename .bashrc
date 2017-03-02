@@ -217,7 +217,10 @@ hstn=${h:0:1}${h:$fourth:1}${h:$fourth*2:1}${h:$fourth*3:1}
 #############
 #
 # Looks like:
-#   #17 hstn 18:47:23 2013/05/23 ~/programming/code-tests (vcs-branch *) [myvirtualenv]
+#   # 17 hstn 18:47:23 2013/05/23
+#   # ~/programming/code-tests
+#   # (vcs-branch *) [myvirtualenv]
+#
 # Benefits:
 #  - Begins with a hash, so it can be copied accidentally without bollocksing up commands
 #  - Ends with a newline, so commands don't get smushed easily
