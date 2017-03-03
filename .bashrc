@@ -220,7 +220,7 @@ fi
 #  - SO MANY LINES, ALWAYS PRINTING, AHHHHHHHHHH-ee couldn't give a shit.
 #
 
-ps1_line1='# \e[0;31m\#\e[m \e[1;32m\t\e[m \e[0;32m\D{%Y/%m/%d}\e[m \e[36m$USER\e[90m@\e[94m$HOSTNAME\e[m'
+ps1_line1='# \e[0;31m\#\e[m \e[1;32m\t\e[m \e[0;32m\D{%Y/%m/%d}\e[m \e[36m$USER\e[90m@$HOSTNAME\e[m'
 ps1_line2='# \e[1;33m\w\e[m'
 ps1_line3='#\e[0;35m$(__git_ps1)$(svn_branch)\e[m \e[0;33m$(__venv_ps1)\e[m\n`echo \# > /tmp/.$$.cmdnum`'
 
