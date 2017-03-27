@@ -65,6 +65,13 @@ function mkcd() {
 }
 
 
+# Make a new virtualenv with the name of the current directory.
+# Also sets the virtualenv project
+function mkvirtualenvhere() {
+    mkvirtualenv -a . $(basename "$(pwd)") "$@"
+}
+
+
 
 ###########
 # ALIASES #
