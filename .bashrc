@@ -203,6 +203,10 @@ fi
 . ${REPO_DIR}/bash_alias_completion.sh
 
 
+# Load all history from historian
+hist import > /dev/null
+
+
 #############
 # YAK'S PS1 #
 #############
