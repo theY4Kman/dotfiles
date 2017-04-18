@@ -22,6 +22,10 @@ HISTTIMEFORMAT='%F %T '
 # Condense multi-line commands to one line
 shopt -s cmdhist
 
+# Load all history from historian
+# https://github.com/jcsalterego/historian
+hist import > /dev/null
+
 
 ############
 # VIM MODE #
@@ -201,10 +205,6 @@ fi
 
 # Enable bash completion for aliases (magic!)
 . ${REPO_DIR}/bash_alias_completion.sh
-
-
-# Load all history from historian
-hist import > /dev/null
 
 
 #############
