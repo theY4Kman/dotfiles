@@ -24,7 +24,7 @@ shopt -s cmdhist
 
 # Load all history from historian
 # https://github.com/jcsalterego/historian
-hist import > /dev/null
+${REPO_DIR}/bin/hist import > /dev/null
 
 
 ############
