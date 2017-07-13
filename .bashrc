@@ -119,6 +119,9 @@ alias tf-graph=terraform-graph
 
 alias sssh="ssh"
 alias got="git"
+alias gut="git"
+alias goit="git"
+alias giot="git"
 
 
 ###########
