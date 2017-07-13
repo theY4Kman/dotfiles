@@ -29,6 +29,13 @@ shopt -s cmdhist
 ############
 # vim bindings, yeah!
 set -o vi
+# Fix Ctrl-L to clear the screen
+bind '\C-l:clear-screen'
+# Fix Ctrl-LeftArrow and Ctrl-RightArrow to move words
+bind '"\e[1;5C":forward-word'
+bind '"\e[1;5D":backward-word'
+# TODO: fix Ctrl+Backspace and Ctrl+Delete to delete words
+
 # Fix Ctrl-A and Ctrl-E
 bind '\C-a:beginning-of-line'
 bind '\C-e:end-of-line'
