@@ -22,9 +22,6 @@ HISTTIMEFORMAT='%F %T '
 # Condense multi-line commands to one line
 shopt -s cmdhist
 
-# Load all history from historian
-# https://github.com/jcsalterego/historian
-${REPO_DIR}/bin/hist import > /dev/null
 
 
 ############
@@ -245,7 +242,6 @@ export PS1="\n${ps1_line1}\n${ps1_line2}\n${ps1_line3}"
 clean_ps1_cmdnum_file() {
     rm -f /tmp/.$$.cmdnum 2>/dev/null;
 }
-trap 'clean_ps1_cmdnum_file' EXIT;
 
 
 ##############
@@ -287,5 +283,14 @@ preexec_invoke_exec () {
     fi
     echo -e '# \e[0;31m'`cat /tmp/.$$.cmdnum 2>/dev/null || echo 1`'\e[m' '\e[1;32m'`date +%T` '\e[0;32m'`date +'%Y/%m/%d'`'\e[m ####### START ###### \e[0;34m '$BASH_COMMAND'\e[m'
 }
+
+
+
+# Load all history from historian
+# Performed down here, so commands run in our .bashrc don't get recorded
+# https://github.com/jcsalterego/historian
+${REPO_DIR}/bin/hist import > /dev/null
+
+trap 'clean_ps1_cmdnum_file' EXIT;
 trap 'preexec_invoke_exec' DEBUG
 
