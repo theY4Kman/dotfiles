@@ -104,6 +104,8 @@ alias gfa="git fetch --all"
 
 # Picked up from Dan @ StyleSeat
 alias pmp="python manage.py"
+alias pmps="pmp shell"
+alias pmpsp="pmp shell_plus"
 # Matching hivelocity
 alias djp="django-admin.py"
 
