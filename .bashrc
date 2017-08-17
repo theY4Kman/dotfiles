@@ -123,6 +123,15 @@ alias gut="git"
 alias goit="git"
 alias giot="git"
 
+alias pyhton="python"
+alias pyhton2="python2"
+alias "pyhton2.5"="python2.5"
+alias "pyhton2.6"="python2.6"
+alias "pyhton2.7"="python2.7"
+alias pyhton3="python3"
+alias "pyhton3.5"="python3.5"
+alias "pyhton3.6"="python3.6"
+
 
 ###########
 # EXPORTS #
