@@ -12,6 +12,7 @@
     us = stash pop
     lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
     rollback = reset --soft HEAD^
+    alias = config --get-regexp ^alias\\.
 
     # Drunk aliases
     pus = push
