@@ -9,7 +9,8 @@
     co = checkout
     ci = commit
     unstash = stash pop
-    us = stash pop
+    us = unstash
+    s = stash
     lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
     rollback = reset --soft HEAD^
     alias = config --get-regexp ^alias\\.
