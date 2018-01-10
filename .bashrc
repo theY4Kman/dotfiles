@@ -310,7 +310,7 @@ preexec_invoke_exec () {
     [ -n "$COMP_LINE" ] && return  # do nothing if completing
     # The _z is for z, the weighting chdir db command.
     # Really, I should be testing for $PROMPT_COMMAND, because that's what the first test is for. Otherwise, the echo is run twice every Enter.
-    if [[ "$BASH_COMMAND" == _z* ]] || [[ -z "$BASH_COMMAND" ]]; then
+    if [[ "$BASH_COMMAND" == _z* ]] || [[ "$BASH_COMMAND" == _direnv_hook* ]] || [[ -z "$BASH_COMMAND" ]]; then
         return
     fi
     echo -e '# \e[0;31m'`cat /tmp/.$$.cmdnum 2>/dev/null || echo 1`'\e[m' '\e[1;32m'`date +%T` '\e[0;32m'`date +'%Y/%m/%d'`'\e[m ####### START ###### \e[0;34m '$BASH_COMMAND'\e[m'
