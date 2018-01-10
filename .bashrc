@@ -92,6 +92,11 @@ function mkvirtualenvhere() {
 alias grep="grep --color=auto -i"
 alias xargs="xargs -L1"  # why this isn't default, idfk
 
+# lazy
+alias l='ls'
+alias ll='ls -l'
+alias lla='ls -la'
+
 # Package management
 alias sai="sudo apt-get install"
 alias syi="sudo yum install"
