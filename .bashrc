@@ -109,6 +109,9 @@ alias gdc="git diff --cached"
 alias gaa="git add --all"
 alias gmm="git merge master"
 alias gfa="git fetch --all"
+alias gr="git rebase"
+alias gorm="git rebase origin/master"
+alias grm="git rebase master"
 
 # Picked up from Dan @ StyleSeat
 alias pmp="python manage.py"
