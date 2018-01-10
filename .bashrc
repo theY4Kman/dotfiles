@@ -313,7 +313,7 @@ preexec_invoke_exec () {
     if [[ "$BASH_COMMAND" == _z* ]] || [[ "$BASH_COMMAND" == _direnv_hook* ]] || [[ -z "$BASH_COMMAND" ]]; then
         return
     fi
-    echo -e '# \e[0;31m'`cat /tmp/.$$.cmdnum 2>/dev/null || echo 1`'\e[m' '\e[1;32m'`date +%T` '\e[0;32m'`date +'%Y/%m/%d'`'\e[m ####### START ###### \e[0;34m '$BASH_COMMAND'\e[m'
+    echo -e '# \x1B[0;31m'`cat /tmp/.$$.cmdnum 2>/dev/null || echo 1`'\x1B[m' '\x1B[1;32m'`date +%T` '\x1B[0;32m'`date +'%Y/%m/%d'`'\x1B[m ####### START ###### \x1B[0;34m '$BASH_COMMAND'\x1B[m'
 }
 
 
