@@ -13,14 +13,17 @@ set +H
 shopt -s histappend
 
 # Essentially disable history file truncation
-HISTFILESIZE=1000000
-HISTSIZE=1000000
+export HISTFILESIZE=1000000
+export HISTSIZE=1000000
 
 # Store full date and time for each history line
-HISTTIMEFORMAT='%F %T '
+export HISTTIMEFORMAT='%F %T '
 
 # Condense multi-line commands to one line
 shopt -s cmdhist
+
+# Ignore duplicate commands
+export HISTCONTROL="ignoredups"
 
 
 
