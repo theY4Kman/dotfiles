@@ -1,4 +1,4 @@
-REPO_DIR=$( cd $(dirname "${BASH_SOURCE[0]}") ; pwd )
+REPO_DIR=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd )
 
 # Disables history expansion (so I can put exclamation marks in double-quoted 
 # commit messages without bash complaining all over me. Pfft, LIKE I CARE, BASH!)
@@ -49,9 +49,9 @@ bind '\C-e:end-of-line'
 #####
 # Setup z (https://github.com/theY4Kman/z -- using my own version, which also prints
 #          the dir being cd'd to, so it can be used like so: pushd `z mydir`)
-Z_PATH=${REPO_DIR}/z/z.sh
-if [ -e $Z_PATH ]; then
-    source $Z_PATH
+Z_PATH="${REPO_DIR}/z/z.sh"
+if [ -e "$Z_PATH" ]; then
+    source "$Z_PATH"
 fi
 # YOU DON'T KNOW WHO MY SYMLINKS REALLY ARE
 export _Z_NO_RESOLVE_SYMLINKS=true
@@ -64,7 +64,7 @@ export _Z_NO_RESOLVE_SYMLINKS=true
 # Convenience function for pushd `z ...`
 function pushz() {
     cd=`z $*`
-    [ "$cd" ] && pushd $cd
+    [ "$cd" ] && pushd "$cd"
 }
 # Some symmetry
 alias popz=popd
@@ -72,14 +72,14 @@ alias popz=popd
 
 # Convenience function to make a directory and cd to it
 function mkcd() {
-    mkdir -p $1 && cd $1
+    mkdir -p "$1" && cd "$1"
 }
 
 
 # Make a new virtualenv with the name of the current directory.
 # Also sets the virtualenv project
 function mkvirtualenvhere() {
-    mkvirtualenv -a . $(basename "$(pwd)") "$@"
+    mkvirtualenv -a . "$(basename "$(pwd)")" "$@"
 }
 
 
@@ -150,7 +150,7 @@ alias "pyhton3.6"="python3.6"
 # EXPORTS #
 ###########
 # Add my scripts under bin/ to the $PATH
-export PATH=$PATH:$REPO_DIR/bin
+export PATH="$PATH:$REPO_DIR/bin"
 
 # Select vim if it exists, fallback to vi
 export EDITOR=`hash vim 2>/dev/null && echo vim || echo vi`
@@ -256,11 +256,11 @@ fi
 
 
 # Enable Django manage.py bash completion
-. ${REPO_DIR}/django_bash_completion.sh
+. "${REPO_DIR}/django_bash_completion.sh"
 
 
 # Enable bash completion for aliases (magic!)
-. ${REPO_DIR}/bash_alias_completion.sh
+. "${REPO_DIR}/bash_alias_completion.sh"
 
 
 #############
@@ -352,7 +352,7 @@ preexec_invoke_exec () {
 # Load all history from historian
 # Performed down here, so commands run in our .bashrc don't get recorded
 # https://github.com/jcsalterego/historian
-${REPO_DIR}/bin/hist import > /dev/null
+"${REPO_DIR}/bin/hist" import > /dev/null
 
 trap 'clean_ps1_cmdnum_file' EXIT;
 trap 'preexec_invoke_exec' DEBUG
