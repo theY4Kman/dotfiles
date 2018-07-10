@@ -207,7 +207,7 @@ fi
 __venv_ps1 ()
 {
     if [ -n "${VIRTUAL_ENV}" ]; then
-        echo [${VIRTUAL_ENV##*/}]
+        echo [${VIRTUAL_ENV##*[/\\]}]
     fi
 }
 
