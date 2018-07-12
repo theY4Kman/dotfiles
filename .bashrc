@@ -103,6 +103,7 @@ alias syi="sudo yum install"
 
 # git-related
 alias gs="git status"
+alias gl="git log"
 alias gm="git checkout master"
 alias gd="git diff"
 alias gdc="git diff --cached"
@@ -117,6 +118,7 @@ alias grm="git rebase master"
 alias pmp="python manage.py"
 alias pmps="pmp shell"
 alias pmpsp="pmp shell_plus"
+alias pmpdb="pmp dbshell"
 # Matching hivelocity
 alias djp="django-admin.py"
 
@@ -144,6 +146,10 @@ alias "pyhton2.7"="python2.7"
 alias pyhton3="python3"
 alias "pyhton3.5"="python3.5"
 alias "pyhton3.6"="python3.6"
+
+alias nom="npm"
+alias npom="npm"
+alias nopm="npm"
 
 
 ###########
