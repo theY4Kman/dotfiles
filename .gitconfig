@@ -30,6 +30,12 @@
     recap = log --all --oneline --no-merges --author="zach@usstudentloancenter.org"
     today = log --since=00:00:00 --all --no-merges --oneline --author="zach@usstudentloancenter.org"
     graph = log --graph --all --decorate --stat --date=iso
+
+    # Ignoring files
+    ignore = update-index --assume-unchanged
+    unignore = update-index --no-assume-unchanged
+    ignored = !git ls-files -v | grep "^[[:lower:]]"
+
 [push]
     default = simple
 [core]
