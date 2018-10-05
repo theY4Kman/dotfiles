@@ -304,7 +304,13 @@ ps1_line1='# \e[0;31m\#\e[m \e[1;32m\t\e[m \e[0;32m\D{%Y/%m/%d}\e[m \e[36m${USER
 ps1_line2='# \e[1;33m\w\e[m'
 ps1_line3='#\e[0;35m$(__git_ps1)$(svn_branch)\e[m \e[0;33m$(__venv_ps1)\e[m\012`echo \# > /tmp/.$$.cmdnum`'
 
-export PS1="\n${ps1_line1}\n${ps1_line2}\n${ps1_line3}"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    ps1_marker='\[$(iterm2_prompt_mark)\]'
+else
+    ps1_marker=''
+fi
+
+export PS1="\n${ps1_line1}\n${ps1_line2}\n${ps1_line3}${ps1_marker}"
 
 
 ###########
