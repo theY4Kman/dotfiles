@@ -1,0 +1,56 @@
+# To utilize this file without copying or symlinking to ~/.gitconfig, use:
+# [include]
+#     path = path/to/yak-setup/.gitconfig
+[gui]
+    color = true
+[color]
+    ui = auto
+[alias]
+    co = checkout
+    ci = commit
+    unstash = stash pop
+    us = stash pop
+    s = stash
+    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    rollback = reset --soft HEAD^
+    alias = config --get-regexp ^alias\\.
+    amend = commit --amend --no-edit
+
+    # Drunk aliases
+    pus = push
+    ush = push
+    rest = reset
+
+    # Source: https://csswizardry.com/2017/05/little-things-i-like-to-do-with-git/
+    stats = shortlog -sn
+    praise = blame
+    recent = for-each-ref --count=10 --sort=-committerdate refs/heads/ --format="%(refname:short)"
+    overview-all = log --all --oneline --no-merges
+    overview = log --all --since='2 weeks' --oneline --no-merges
+    recap = log --all --oneline --no-merges --author="zach@usstudentloancenter.org"
+    today = log --since=00:00:00 --all --no-merges --oneline --author="zach@usstudentloancenter.org"
+    graph = log --graph --all --decorate --stat --date=iso
+
+    # Ignoring files
+    ignore = update-index --assume-unchanged
+    unignore = update-index --no-assume-unchanged
+    ignored = !git ls-files -v | grep "^[[:lower:]]"
+
+[push]
+    default = simple
+[core]
+    attributesfile = gitattributes
+[url "git@github.com:"]
+    insteadOf = "gh:"
+    pushInsteadOf = "github:"
+    pushInsteadOf = "git://github.com/"
+[url "git://github.com/"]
+    insteadOf = "github:"
+[url "git@gist.github.com:"]
+    insteadOf = "gst:"
+    pushInsteadOf = "gist:"
+    pushInsteadOf = "git://gist.github.com/"
+[url "git://gist.github.com/"]
+    insteadOf = "gist:"
+[url "git@heroku.com:"]
+    insteadOf = "heroku:"

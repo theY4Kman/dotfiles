@@ -1,11 +1,1 @@
-*.py    diff=python
-*.js    diff=javascript
-*.c     diff=cpp
-*.cs    diff=csharp
-*.rb    diff=ruby
-*.pl    diff=perl
-*.java  diff=java
-*.tex   diff=tex
-
-*.htm   diff=html
-*.html  diff=html
+gitattributes
