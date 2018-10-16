@@ -300,9 +300,9 @@ fi
 # inside an `echo -e`. So, we output some newlines as the ASCII code \012
 # Ref: https://stackoverflow.com/a/37074809
 
-ps1_line1='# \e[0;31m\#\e[m \e[1;32m\t\e[m \e[0;32m\D{%Y/%m/%d}\e[m \e[36m${USER:-${USERNAME}}\e[90m@${HOSTNAME:=$(hostname)}$([ -z "$HIDE_HOSTNAME_WARNING" ] && echo -e " \e[41m\e[97m[!]")\e[m'
-ps1_line2='# \e[1;33m\w\e[m'
-ps1_line3='#\e[0;35m$(__git_ps1)$(svn_branch)\e[m \e[0;33m$(__venv_ps1)\e[m\012`echo \# > /tmp/.$$.cmdnum`'
+ps1_line1='# \[\e[0;31m\]\#\[\e[m\] \[\e[1;32m\]\t\[\e[m\] \[\e[0;32m\]\D{%Y/%m/%d}\[\e[m\] \[\e[36m\]${USER:-${USERNAME}}\[\e[90m\]@${HOSTNAME:=$(hostname)}$([ -z "$HIDE_HOSTNAME_WARNING" ] && echo -e " \[\e[41m\e[97m\][!]")\[\e[m\]'
+ps1_line2='# \[\e[1;33m\]\w\[\e[m\]'
+ps1_line3='#\[\e[0;35m\]$(__git_ps1)$(svn_branch)\[\e[m\] \[\e[0;33m\]$(__venv_ps1)\[\e[m\]\012`echo \# > /tmp/.$$.cmdnum`'
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     ps1_marker='\[$(iterm2_prompt_mark)\]'
@@ -353,7 +353,12 @@ clean_ps1_cmdnum_file() {
 #
 
 preexec_invoke_exec () {
-    [ -n "$COMP_LINE" ] && return  # do nothing if completing
+    # do nothing if completing
+    [ -n "$COMP_LINE" ] && return
+
+    # allow manual omission of START line
+    [ -n "$DISABLE_START_LINE" ] && return
+
     # The _z is for z, the weighting chdir db command.
     # Really, I should be testing for $PROMPT_COMMAND, because that's what the first test is for. Otherwise, the echo is run twice every Enter.
     if [[ "$BASH_COMMAND" == _z* ]] || [[ "$BASH_COMMAND" == _direnv_hook* ]] || [[ -z "$BASH_COMMAND" ]]; then
