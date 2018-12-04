@@ -310,7 +310,7 @@ else
     ps1_marker=''
 fi
 
-export PS1="\n${ps1_line1}\n${ps1_line2}\n${ps1_line3}${ps1_marker}"
+export PS1="\012${ps1_line1}\012${ps1_line2}\012${ps1_line3}${ps1_marker}"
 
 
 ###########
