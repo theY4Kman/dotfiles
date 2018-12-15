@@ -12,6 +12,7 @@
     us = stash pop
     s = stash
     lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    wip = commit -m "WIP**************************************************************************************"
     rollback = reset --soft HEAD^
     alias = config --get-regexp ^alias\\.
     amend = commit --amend --no-edit
