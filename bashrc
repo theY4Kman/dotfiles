@@ -180,6 +180,14 @@ fi
 # AUTOCOMPLETE #
 ################
 
+# Enable Django manage.py bash completion
+. "${REPO_DIR}/django_bash_completion.sh"
+
+
+# Enable bash completion for aliases (magic!)
+. "${REPO_DIR}/bash_alias_completion.sh"
+
+
 _complete_ssh_hosts ()
 {
         COMPREPLY=()
@@ -263,13 +271,6 @@ if [ $? != 0 ]; then
   source $SCRIPT_PATH
 fi
 
-
-# Enable Django manage.py bash completion
-. "${REPO_DIR}/django_bash_completion.sh"
-
-
-# Enable bash completion for aliases (magic!)
-. "${REPO_DIR}/bash_alias_completion.sh"
 
 
 #############
