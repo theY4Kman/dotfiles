@@ -222,7 +222,7 @@ __venv_ps1 ()
 {
     if [ -n "${VIRTUAL_ENV}" ]; then
         if [ -z "${PYTHON_VERSION+x}" ]; then
-            PYTHON_VERSION="$(python -V | awk '{print $NF}')"
+            PYTHON_VERSION="$(python -V 2>&1 | awk '{print $NF}')"
         fi
         echo [${VIRTUAL_ENV##*[/\\]}${PYTHON_VERSION:+" :: $PYTHON_VERSION"}]
     fi
