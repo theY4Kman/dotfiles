@@ -1,5 +1,4 @@
-yak-setup
-=========
+# dotfiles (they4kman)
 
 Scripts, configurations, and other things to remember for future use.
 
