@@ -22,6 +22,9 @@
     ush = push
     rest = reset
 
+    # hub CLI aliases
+    prco = pr checkout
+
     # Source: https://csswizardry.com/2017/05/little-things-i-like-to-do-with-git/
     stats = shortlog -sn
     praise = blame
