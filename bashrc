@@ -115,6 +115,9 @@ alias gr="git rebase"
 alias gorm="git rebase origin/master"
 alias grm="git rebase master"
 
+# python
+alias pipfile="pipenv"  # sue me
+
 # Picked up from Dan @ StyleSeat
 alias pmp="python manage.py"
 alias pmps="pmp shell"
