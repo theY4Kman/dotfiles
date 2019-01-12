@@ -96,6 +96,7 @@ alias xargs="xargs -L1"  # why this isn't default, idfk
 alias l='ls'
 alias ll='ls -l'
 alias lla='ls -la'
+alias la='ls -la'  # come on, i don't really ever want just `ls -a`
 
 # Package management
 alias sai="sudo apt-get install"
