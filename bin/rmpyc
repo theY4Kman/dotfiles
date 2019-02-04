@@ -1,3 +1,5 @@
 #!/bin/sh
 find . -name '*.pyc' -delete
-find . -name '__pycache__' -delete
+
+# well, this rimraf is frightening
+find . -name '__pycache__' -type d -exec rm -rf "{}" \;
