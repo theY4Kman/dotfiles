@@ -25,6 +25,7 @@
 
     # hub CLI aliases
     prco = pr checkout
+    prs = pr list
 
     # Source: https://csswizardry.com/2017/05/little-things-i-like-to-do-with-git/
     stats = shortlog -sn
