@@ -309,7 +309,20 @@ fi
 # inside an `echo -e`. So, we output some newlines as the ASCII code \012
 # Ref: https://stackoverflow.com/a/37074809
 
-ps1_line1='# \[\e[0;31m\]\#\[\e[m\] \[\e[1;32m\]\t\[\e[m\] \[\e[0;32m\]\D{%Y/%m/%d}\[\e[m\] \[\e[36m\]${USER:-${USERNAME}}\[\e[90m\]@${HOSTNAME:=$(hostname)}$([ -z "$HIDE_HOSTNAME_WARNING" ] && echo -e " \[\e[41m\e[97m\][!]")\[\e[m\]'
+ps1_user() {
+    user="${USER:-${USERNAME}}"
+
+    # If user is root, display the username in red
+    if [ "$USER" = "root" ]; then
+        color='\e[0;31m'
+    else
+        color='\e[0;36m'
+    fi
+
+    echo -e ${color}${user}'\e[m'
+}
+
+ps1_line1='# \[\e[0;31m\]\#\[\e[m\] \[\e[1;32m\]\t\[\e[m\] \[\e[0;32m\]\D{%Y/%m/%d}\[\e[m\] `ps1_user`\[\e[90m\]@${HOSTNAME:=$(hostname)}$([ -z "$HIDE_HOSTNAME_WARNING" ] && echo -e " \[\e[41m\e[97m\][!]")\[\e[m\]'
 ps1_line2='# \[\e[1;33m\]\w\[\e[m\]'
 ps1_line3='#\[\e[0;35m\]$(__git_ps1)$(svn_branch)\[\e[m\] \[\e[0;33m\]$(__venv_ps1)\[\e[m\]\012`echo \# > /tmp/.$$.cmdnum`'
 
