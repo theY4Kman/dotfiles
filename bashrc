@@ -341,8 +341,8 @@ clean_ps1_cmdnum_file() {
 #   # ~/programming/code-tests
 #   # (vcs-branch *) [myvirtualenv]
 #   la ~ | grep yo
-#   # 17 19:12:55 2013/09/13 ####### START ###### ls --color=auto -A ~
-#   # 17 19:12:55 2013/09/13 ####### START ###### grep --color=auto -i yo
+#   # 17 19:12:55 2013/09/13 #! ls --color=auto -A ~
+#   # 17 19:12:55 2013/09/13 #! grep --color=auto -i yo
 #
 # Benefits
 #
@@ -350,7 +350,7 @@ clean_ps1_cmdnum_file() {
 #    When the command completes, the PS1 will be printed with date and time,
 #    Allowing the measurement of how long a command takes
 #
-#  - Each ### START ### line prints the command executed in expanded form,
+#  - Each #! line prints the command executed in expanded form,
 #    revealing what's actually being run behind aliases and the such.
 #
 #
@@ -360,6 +360,10 @@ clean_ps1_cmdnum_file() {
 #    START lines. (Again, I'd rather have more information than less.
 #    After all, what is infinite scrollback for, anyway?)
 #
+
+##
+# Characters to display after date and time in start line
+YAK_START_SYMBOL='::'
 
 preexec_invoke_exec () {
     # do nothing if completing
@@ -373,7 +377,7 @@ preexec_invoke_exec () {
     if [[ "$BASH_COMMAND" == _z* ]] || [[ "$BASH_COMMAND" == _direnv_hook* ]] || [[ -z "$BASH_COMMAND" ]]; then
         return
     fi
-    echo -e '# \x1B[0;31m'`cat /tmp/.$$.cmdnum 2>/dev/null || echo 1`'\x1B[m' '\x1B[1;32m'`date +%T` '\x1B[0;32m'`date +'%Y/%m/%d'`'\x1B[m ####### START ###### \x1B[0;34m '$BASH_COMMAND'\x1B[m'
+    echo -e '# \x1B[0;31m'`cat /tmp/.$$.cmdnum 2>/dev/null || echo 1`'\x1B[m' '\x1B[1;32m'`date +%T` '\x1B[0;32m'`date +'%Y/%m/%d'`'\x1B[m '$YAK_START_SYMBOL' \x1B[0;34m'$BASH_COMMAND'\x1B[m'
 }
 
 
