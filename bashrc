@@ -193,7 +193,7 @@ fi
 
 
 # Enable bash completion for aliases (magic!)
-. "${REPO_DIR}/bash_alias_completion.sh"
+#. "${REPO_DIR}/bash_alias_completion.sh"
 
 
 _complete_ssh_hosts ()
