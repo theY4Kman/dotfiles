@@ -374,32 +374,58 @@ clean_ps1_cmdnum_file() {
 #    After all, what is infinite scrollback for, anyway?)
 #
 
-##
+###
 # Characters to display after date and time in start line
+#
 YAK_START_SYMBOL='::'
 
+
 preexec_invoke_exec () {
+    ###
     # do nothing if completing
+    #
     [ -n "$COMP_LINE" ] && return
 
+    ###
     # allow manual omission of START line
-    [ -n "$DISABLE_START_LINE" ] && return
-
-    # The _z is for z, the weighting chdir db command.
-    # Really, I should be testing for $PROMPT_COMMAND, because that's what the first test is for. Otherwise, the echo is run twice every Enter.
-    if [[ "$BASH_COMMAND" == _z* ]] || [[ "$BASH_COMMAND" == _direnv_hook* ]] || [[ -z "$BASH_COMMAND" ]]; then
+    #  (including start-of-line env var cases, e.g. `DISABLE_START_LINE=true echo hi`)
+    #
+    if [ -n "$DISABLE_START_LINE" ] || [[ "$BASH_COMMAND" == DISABLE_START_LINE=* ]]; then
         return
     fi
+
+    ###
+    # if no command is being executed (idk how), ignore it
+    #
+    [[ -z "$BASH_COMMAND" ]] && return;
+
+    ###
+	# don't print anything for the prompt command
+    #
+    [ "$BASH_COMMAND" = "$PROMPT_COMMAND" ] && return
+
+    ###
+    # ignore z (the weighting chdir command) performing its calculations
+    #
+    [[ "$BASH_COMMAND" == _z* ]] && return;
+
+    ###
+    # ignore hooks from direnv (the per-directory .env file sourcer)
+    #
+    [[ "$BASH_COMMAND" == _direnv_hook* ]] && return;
+
+    ###
+    # Print the start line
+    #
     echo -e '# \x1B[0;31m'`cat /tmp/.$$.cmdnum 2>/dev/null || echo 1`'\x1B[m' '\x1B[1;32m'`date +%T` '\x1B[0;32m'`date +'%Y/%m/%d'`'\x1B[m '$YAK_START_SYMBOL' \x1B[0;34m'$BASH_COMMAND'\x1B[m'
 }
 
+
+trap 'clean_ps1_cmdnum_file' EXIT;
+trap 'preexec_invoke_exec' DEBUG
 
 
 # Load all history from historian
 # Performed down here, so commands run in our .bashrc don't get recorded
 # https://github.com/jcsalterego/historian
-"${REPO_DIR}/bin/hist" import > /dev/null
-
-trap 'clean_ps1_cmdnum_file' EXIT;
-trap 'preexec_invoke_exec' DEBUG
-
+DISABLE_START_LINE=true "${REPO_DIR}/bin/hist" import > /dev/null
