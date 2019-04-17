@@ -143,6 +143,7 @@ alias amke="make"
 
 alias got="git"
 alias gut="git"
+alias guit="git"
 alias goit="git"
 alias giot="git"
 
