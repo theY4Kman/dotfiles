@@ -93,6 +93,7 @@ alias grep="grep --color=auto -i"
 alias xargs="xargs -L1"  # why this isn't default, idfk
 
 # lazy
+alias ..='cd ..'
 alias l='ls'
 alias ll='ls -l'
 alias lla='ls -la'
