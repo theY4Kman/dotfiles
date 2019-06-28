@@ -27,6 +27,9 @@
     prco = pr checkout
     prs = pr list
 
+    # Source: https://stackoverflow.com/a/25095062/148585
+    recent = git-recent
+
     # Source: https://csswizardry.com/2017/05/little-things-i-like-to-do-with-git/
     stats = shortlog -sn
     praise = blame
