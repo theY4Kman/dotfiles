@@ -109,6 +109,9 @@ alias ll='ls -l'
 alias lla='ls -la'
 alias la='ls -la'  # come on, i don't really ever want just `ls -a`
 
+# sudo
+alias sudoi='sudo -i'
+
 # Package management
 alias sai="sudo apt-get install"
 alias syi="sudo yum install"
