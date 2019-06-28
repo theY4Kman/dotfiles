@@ -32,12 +32,22 @@ export HISTCONTROL="ignoredups"
 ############
 # vim bindings, yeah!
 set -o vi
+
 # Fix Ctrl-L to clear the screen
 bind '\C-l:clear-screen'
+
 # Fix Ctrl-LeftArrow and Ctrl-RightArrow to move words
-bind '"\e[1;5C":forward-word'
-bind '"\e[1;5D":backward-word'
-# TODO: fix Ctrl+Backspace and Ctrl+Delete to delete words
+bind '"\e[1;5C":forward-word'   # ctrl-rightarrow
+bind '"\e[1;5D":backward-word'  # ctrl-leftarrow
+
+# Fix Ctrl+Backspace and Ctrl+Delete to delete words
+bind '"\e[3;5~": kill-word'     # ctrl-delete
+bind '"\b":backward-kill-word'  # ctrl-backspace (idk why \b works. ref: https://superuser.com/a/245254)
+
+# Fix Ctrl-K to delete text from cursor to end of line
+bind '"\C-k":kill-line'
+# Fix Ctrl-U to delete text from cursor to beginning of line
+bind '"\C-u":backward-kill-line'
 
 # Fix Ctrl-A and Ctrl-E
 bind '\C-a:beginning-of-line'
