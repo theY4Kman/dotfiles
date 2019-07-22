@@ -1,6 +1,9 @@
 # To utilize this file without copying or symlinking to ~/.gitconfig, use:
 # [include]
 #     path = path/to/yak-setup/.gitconfig
+[user]
+    email = they4kman@gmail.com
+    name = Zach \"theY4Kman\" Kanzler
 [gui]
     color = true
 [color]
