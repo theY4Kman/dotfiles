@@ -235,6 +235,21 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 
+# Ref: https://www.reddit.com/r/commandline/comments/kbeoe/you_can_make_readline_and_bash_much_more_user/
+
+#
+# Enable case-insensitive completions
+#
+bind 'set completion-ignore-case on'
+
+
+#
+# Only display the last N characters needed to select
+# different completion suggestions.
+#
+bind 'set completion-prefix-display-length 2'
+
+
 
 ###############
 # PS1 HELPERS #
