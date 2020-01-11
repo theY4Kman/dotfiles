@@ -7,3 +7,4 @@ set autoindent
 
 colorscheme desert
 syntax on
+set number
