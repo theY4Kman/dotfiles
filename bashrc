@@ -189,6 +189,12 @@ export GIT_PS1_SHOWDIRTYSTATE=true
 # We override the default venv display, so disable it
 export VIRTUAL_ENV_DISABLE_PROMPT=true
 
+# On Termux (Android), the hostname command will always return "localhost"
+# The "true" hostname can only be retrieved through the Termux APIs
+if command -v termux-setup-storage >/dev/null 2>&1; then
+    export HOSTNAME="$(getprop net.hostname)"
+    export HOSTNAME_TERMUX=1
+fi
 
 # I've seen the PROMPT_COMMAND get filled when root, and it ends up printing many
 # unnecessary lines, and I don't want that clutter. The command in particular
