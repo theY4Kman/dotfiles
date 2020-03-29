@@ -343,7 +343,7 @@ ps1_user() {
     user="${USER:-${USERNAME:-$(whoami)}}"
 
     # If user is root, display the username in red
-    if [ "$USER" = "root" ]; then
+    if [ "$user" = "root" ]; then
         color='\e[0;31m'
     else
         color='\e[0;36m'
