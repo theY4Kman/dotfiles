@@ -436,7 +436,7 @@ preexec_invoke_exec () {
     [[ -z "$BASH_COMMAND" ]] && return;
 
     ###
-	# don't print anything for the prompt command
+    # don't print anything for the prompt command
     #
     [ "$BASH_COMMAND" = "$PROMPT_COMMAND" ] && return
 
