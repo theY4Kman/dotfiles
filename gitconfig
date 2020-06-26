@@ -33,6 +33,13 @@
     # Source: https://stackoverflow.com/a/25095062/148585
     recent = git-recent
 
+    ###
+    # Interactive selection menu for recent branches; press Enter to checkout
+    #
+    # Requires: https://github.com/p-gen/smenu
+    #
+    reco = "!f() { BRANCH=$(git recent | smenu -l -n10); [ -n \"$BRANCH\" ] && echo && git checkout \"$BRANCH\"; }; f"
+
     # Source: https://csswizardry.com/2017/05/little-things-i-like-to-do-with-git/
     stats = shortlog -sn
     praise = blame
