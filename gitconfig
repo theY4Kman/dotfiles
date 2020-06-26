@@ -54,7 +54,7 @@
     ignore = update-index --assume-unchanged
     unignore = update-index --no-assume-unchanged
     ignored = !git ls-files -v | grep "^[[:lower:]]"
-    exclude = "!f() { printf '%s\n' \"\n# git excluded $(date)\" \"$@\" \"\" | tee -a \".git/info/exclude\" > /dev/null; }; f"
+    exclude = "!f() { printf '\n\n%s\n%s\n' \"# git excluded $(date)\" \"$(realpath --relative-to=\"$(git rev-parse --show-toplevel)\" \"${GIT_PREFIX:-.}/$@\")\" | tee -a \".git/info/exclude\" > /dev/null; }; f"
 
 [push]
     default = simple
