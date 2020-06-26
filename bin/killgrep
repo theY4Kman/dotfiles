@@ -43,7 +43,7 @@ printf "%s\n" "${lines[@]}" | column -c 2
 
 # Confirm the kill
 echo
-read -n 2 -r -p 'Kill these processes? [y/N] '
+read -r -p 'Kill these processes? [y/N] '
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
     kill ${pids[@]}
