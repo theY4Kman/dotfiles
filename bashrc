@@ -375,18 +375,38 @@ export PS1="\012${ps1_line1}\012${ps1_line2}\012${ps1_line3}${ps1_marker}"
 # COMMAND SUMMARY #
 ###################
 #
-# Prints the last command's exit code and elapsed time.
+# Prints the last command's elapsed time, exit code, and an explanation of the
+# exit code (if applicable).
 #
-#  (Mostly stolen from https://github.com/jichu4n/bash-command-timer)
+#  (Heavily stolen from https://github.com/jichu4n/bash-command-timer)
 #
 # Looks like:
 #
-#   # ! [1     ] [4s012   ]
-#   # 3 05:24:31 2020/06/28 user@host
-#   # ~
-#   #
+#    # ✔ [0     ] [1s003   ]
+#    # 2 16:47:42 2020/06/28 user@host
+#    # ~
+#    #
+#
+#    # ! [1     ] [2s003   ] general warning/error
+#    # 3 16:47:48 2020/06/28 user@host
+#    # ~
+#    #
+#
+#    # ‼ [2     ] [3s583   ] general error
+#    # 4 16:48:06 2020/06/28 user@host
+#    # ~
+#    #
+#
+#    # ‼ [130   ] [4s903   ] 130 - 128 = 2, SIGINT
+#    # 5 16:48:27 2020/06/28 user@host
+#    # ~
+#    #
 #
 
+###
+# Called at beginning of $PROMPT_COMMAND to persist the command's exit code
+# and end time.
+#
 function _yak_command_post() {
     _YAK_FINAL_EXIT="$_YAK_EXIT"
 
@@ -397,7 +417,11 @@ function _yak_command_post() {
     _YAK_COMMAND_END_TIME=$(date '+%s%N')
 }
 
-function _yak_command_post_print() {
+###
+# Called at end of $PROMPT_COMMAND to print the command summary, including
+# elapsed time, exit code, and exit code explanation.
+#
+function _yak_command_summary() {
     _YAK_AT_PROMPT=1
 
     if [ -z "$_YAK_COMMAND_START_TIME" ] || [ -z "$_YAK_COMMAND_END_TIME" ]; then
@@ -444,15 +468,20 @@ function _yak_command_post_print() {
         exit_color=88
     fi
 
+    # Use the width of the cmdnum to ensure spacing is consistent with next prompt
     local cmdnum=$(cat ${TMPDIR:-/tmp}/.$$.cmdnum)
+    local next_cmdnum=$((cmdnum + 1))
+    local next_cmdnum_spacing="${next_cmdnum//?/ }"
+    local exit_icon_spacing="${next_cmdnum_spacing:1}"
+
     local base_color=243
     local time_color=62
 
     local exit_explain=$(_explain_exit_code $_YAK_FINAL_EXIT)
 
-    printf '\n%s# %s%s %s[%s%-6s%s] [%s%-8s%s] %s\x1B[m' \
+    printf '\n%s# %s%s%s %s[%s%-6s%s] [%s%-8s%s] %s\x1B[m' \
         "$(_fmt_256 $base_color)" \
-        "$(_fmt_256 $exit_color)" "$exit_icon" \
+        "$(_fmt_256 $exit_color)" "$exit_icon" "$exit_icon_spacing" \
         "$(_fmt_256 $base_color)" \
         "$(_fmt_256 $exit_color)" "$_YAK_FINAL_EXIT" \
         "$(_fmt_256 $base_color)" \
@@ -521,7 +550,7 @@ function _fmt_256() {
 PROMPT_COMMAND="
   DISABLE_START_LINE=1 _yak_command_post;
   $PROMPT_COMMAND
-  DISABLE_START_LINE=1 _yak_command_post_print;
+  DISABLE_START_LINE=1 _yak_command_summary;
 "
 
 
