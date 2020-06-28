@@ -221,16 +221,17 @@ _complete_ssh_hosts ()
 {
         COMPREPLY=()
         cur="${COMP_WORDS[COMP_CWORD]}"
-        comp_ssh_hosts=`cat ~/.ssh/known_hosts | \
-                        cut -f 1 -d ' ' | \
-                        sed -e s/,.*//g | \
-                        grep -v ^# | \
-                        uniq | \
-                        grep -v "\[" ;
-                cat ~/.ssh/config | \
-                        grep "^Host " | \
-                        awk '{print $2}'
-                `
+        comp_ssh_hosts=$(
+          cat ~/.ssh/known_hosts | \
+              cut -f 1 -d ' ' | \
+              sed -e s/,.*//g | \
+              grep -v ^# | \
+              uniq | \
+              grep -v "\[" ;
+          cat ~/.ssh/config | \
+              grep "^Host " | \
+              awk '{print $2}'
+        )
         COMPREPLY=( $(compgen -W "${comp_ssh_hosts}" -- $cur))
         return 0
 }
@@ -241,14 +242,12 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 
+###
 # Ref: https://www.reddit.com/r/commandline/comments/kbeoe/you_can_make_readline_and_bash_much_more_user/
-
 #
 # Enable case-insensitive completions
 #
 bind 'set completion-ignore-case on'
-
-
 #
 # Only display the last N characters needed to select
 # different completion suggestions.
@@ -371,6 +370,110 @@ fi
 export PS1="\012${ps1_line1}\012${ps1_line2}\012${ps1_line3}${ps1_marker}"
 
 
+
+###################
+# COMMAND SUMMARY #
+###################
+#
+# Prints the last command's exit code and elapsed time.
+#
+#  (Mostly stolen from https://github.com/jichu4n/bash-command-timer)
+#
+# Looks like:
+#
+#   # ! [1     ] [4s012   ]
+#   # 3 05:24:31 2020/06/28 user@host
+#   # ~
+#   #
+#
+
+function _yak_command_post() {
+    _YAK_FINAL_EXIT="$_YAK_EXIT"
+
+    if [ -z "$_YAK_COMMAND_START_TIME" ]; then
+        return
+    fi
+
+    _YAK_COMMAND_END_TIME=$(date '+%s%N')
+}
+
+function _yak_command_post_print() {
+  _YAK_AT_PROMPT=1
+
+  if [ -z "$_YAK_COMMAND_START_TIME" ] || [ -z "$_YAK_COMMAND_END_TIME" ]; then
+      return
+  fi
+
+  local MSEC=1000000
+  local SEC=$(($MSEC * 1000))
+  local MIN=$((60 * $SEC))
+  local HOUR=$((60 * $MIN))
+  local DAY=$((24 * $HOUR))
+
+  local command_time=$(($_YAK_COMMAND_END_TIME - $_YAK_COMMAND_START_TIME))
+  local num_days=$(($command_time / $DAY))
+  local num_hours=$(($command_time % $DAY / $HOUR))
+  local num_mins=$(($command_time % $HOUR / $MIN))
+  local num_secs=$(($command_time % $MIN / $SEC))
+  local num_msecs=$(($command_time % $SEC / $MSEC))
+
+  local time_str=""
+  if [ $num_days -gt 0 ]; then
+    time_str="${time_str}${num_days}d "
+  fi
+  if [ $num_hours -gt 0 ]; then
+    time_str="${time_str}${num_hours}h "
+  fi
+  if [ $num_mins -gt 0 ]; then
+    time_str="${time_str}${num_mins}m "
+  fi
+
+  local num_msecs_pretty=$(printf '%03d' $num_msecs)
+  time_str="${time_str}${num_secs}s${num_msecs_pretty}"
+
+  local exit_icon=""
+  local exit_color=231  # white
+  if [ "$_YAK_FINAL_EXIT" = "0" ]; then
+      exit_icon="✔"
+      exit_color=28
+  elif [ "$_YAK_FINAL_EXIT" = "1" ]; then
+      exit_icon="!"
+      exit_color=137
+  elif [ "$_YAK_FINAL_EXIT" -gt 1 ]; then
+      exit_icon="‼"
+      exit_color=88
+  fi
+
+  local cmdnum=$(cat ${TMPDIR:-/tmp}/.$$.cmdnum)
+  local base_color=243
+  local time_color=62
+
+  printf '\n%s# %s%s %s[%s%-6s%s] [%s%-8s%s]\x1B[m' \
+      "$(_fmt_256 $base_color)" \
+      "$(_fmt_256 $exit_color)" "$exit_icon" \
+      "$(_fmt_256 $base_color)" \
+      "$(_fmt_256 $exit_color)" "$_YAK_FINAL_EXIT" \
+      "$(_fmt_256 $base_color)" \
+      "$(_fmt_256 $time_color)" "${time_str}" \
+      "$(_fmt_256 $base_color)"
+
+  unset _YAK_COMMAND_START_TIME
+  unset _YAK_COMMAND_END_TIME
+  unset _YAK_FINAL_EXIT
+  unset _YAK_EXIT
+}
+
+function _fmt_256() {
+  printf '\x1B[38;5;%sm' "$1"
+}
+
+PROMPT_COMMAND="
+  DISABLE_START_LINE=1 _yak_command_post;
+  $PROMPT_COMMAND
+  DISABLE_START_LINE=1 _yak_command_post_print;
+"
+
+
 ###########
 # CLEANUP #
 ###########
@@ -417,6 +520,8 @@ YAK_START_SYMBOL='::'
 
 
 preexec_invoke_exec () {
+    local EXIT="$?"
+
     ###
     # do nothing if completing
     #
@@ -459,11 +564,25 @@ preexec_invoke_exec () {
         "$(date +'%Y/%m/%d')" \
         "$YAK_START_SYMBOL" \
         "$BASH_COMMAND"
+
+    ###
+    # Record the start time of the first command (e.g. if there are multiple
+    # piped or conditional commands)
+    #
+    if [ -n "$_YAK_AT_PROMPT" ]; then
+        unset _YAK_AT_PROMPT
+        _YAK_COMMAND_START_TIME=$(date '+%s%N')
+    fi
+
+    ###
+    # Save the exit code of the last command, so we can print it out in our PROMPT_COMMAND
+    #
+    _YAK_EXIT="$EXIT"
 }
 
 
 trap 'clean_ps1_cmdnum_file' EXIT;
-trap 'preexec_invoke_exec' DEBUG
+trap 'preexec_invoke_exec' DEBUG;
 
 
 # Load all history from historian
