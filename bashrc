@@ -398,69 +398,120 @@ function _yak_command_post() {
 }
 
 function _yak_command_post_print() {
-  _YAK_AT_PROMPT=1
+    _YAK_AT_PROMPT=1
 
-  if [ -z "$_YAK_COMMAND_START_TIME" ] || [ -z "$_YAK_COMMAND_END_TIME" ]; then
-      return
-  fi
+    if [ -z "$_YAK_COMMAND_START_TIME" ] || [ -z "$_YAK_COMMAND_END_TIME" ]; then
+        return
+    fi
 
-  local MSEC=1000000
-  local SEC=$(($MSEC * 1000))
-  local MIN=$((60 * $SEC))
-  local HOUR=$((60 * $MIN))
-  local DAY=$((24 * $HOUR))
+    local MSEC=1000000
+    local SEC=$(($MSEC * 1000))
+    local MIN=$((60 * $SEC))
+    local HOUR=$((60 * $MIN))
+    local DAY=$((24 * $HOUR))
 
-  local command_time=$(($_YAK_COMMAND_END_TIME - $_YAK_COMMAND_START_TIME))
-  local num_days=$(($command_time / $DAY))
-  local num_hours=$(($command_time % $DAY / $HOUR))
-  local num_mins=$(($command_time % $HOUR / $MIN))
-  local num_secs=$(($command_time % $MIN / $SEC))
-  local num_msecs=$(($command_time % $SEC / $MSEC))
+    local command_time=$(($_YAK_COMMAND_END_TIME - $_YAK_COMMAND_START_TIME))
+    local num_days=$(($command_time / $DAY))
+    local num_hours=$(($command_time % $DAY / $HOUR))
+    local num_mins=$(($command_time % $HOUR / $MIN))
+    local num_secs=$(($command_time % $MIN / $SEC))
+    local num_msecs=$(($command_time % $SEC / $MSEC))
 
-  local time_str=""
-  if [ $num_days -gt 0 ]; then
-    time_str="${time_str}${num_days}d "
-  fi
-  if [ $num_hours -gt 0 ]; then
-    time_str="${time_str}${num_hours}h "
-  fi
-  if [ $num_mins -gt 0 ]; then
-    time_str="${time_str}${num_mins}m "
-  fi
+    local time_str=""
+    if [ $num_days -gt 0 ]; then
+        time_str="${time_str}${num_days}d "
+    fi
+    if [ $num_hours -gt 0 ]; then
+        time_str="${time_str}${num_hours}h "
+    fi
+    if [ $num_mins -gt 0 ]; then
+        time_str="${time_str}${num_mins}m "
+    fi
 
-  local num_msecs_pretty=$(printf '%03d' $num_msecs)
-  time_str="${time_str}${num_secs}s${num_msecs_pretty}"
+    local num_msecs_pretty=$(printf '%03d' $num_msecs)
+    time_str="${time_str}${num_secs}s${num_msecs_pretty}"
 
-  local exit_icon=""
-  local exit_color=231  # white
-  if [ "$_YAK_FINAL_EXIT" = "0" ]; then
-      exit_icon="✔"
-      exit_color=28
-  elif [ "$_YAK_FINAL_EXIT" = "1" ]; then
-      exit_icon="!"
-      exit_color=137
-  elif [ "$_YAK_FINAL_EXIT" -gt 1 ]; then
-      exit_icon="‼"
-      exit_color=88
-  fi
+    local exit_icon=""
+    local exit_color=231  # white
+    if [ "$_YAK_FINAL_EXIT" = "0" ]; then
+        exit_icon="✔"
+        exit_color=28
+    elif [ "$_YAK_FINAL_EXIT" = "1" ]; then
+        exit_icon="!"
+        exit_color=137
+    elif [ "$_YAK_FINAL_EXIT" -gt 1 ]; then
+        exit_icon="‼"
+        exit_color=88
+    fi
 
-  local cmdnum=$(cat ${TMPDIR:-/tmp}/.$$.cmdnum)
-  local base_color=243
-  local time_color=62
+    local cmdnum=$(cat ${TMPDIR:-/tmp}/.$$.cmdnum)
+    local base_color=243
+    local time_color=62
 
-  printf '\n%s# %s%s %s[%s%-6s%s] [%s%-8s%s]\x1B[m' \
-      "$(_fmt_256 $base_color)" \
-      "$(_fmt_256 $exit_color)" "$exit_icon" \
-      "$(_fmt_256 $base_color)" \
-      "$(_fmt_256 $exit_color)" "$_YAK_FINAL_EXIT" \
-      "$(_fmt_256 $base_color)" \
-      "$(_fmt_256 $time_color)" "${time_str}" \
-      "$(_fmt_256 $base_color)"
+    local exit_explain=$(_explain_exit_code $_YAK_FINAL_EXIT)
 
-  unset _YAK_COMMAND_START_TIME
-  unset _YAK_COMMAND_END_TIME
-  unset _YAK_FINAL_EXIT
-  unset _YAK_EXIT
+    printf '\n%s# %s%s %s[%s%-6s%s] [%s%-8s%s] %s\x1B[m' \
+        "$(_fmt_256 $base_color)" \
+        "$(_fmt_256 $exit_color)" "$exit_icon" \
+        "$(_fmt_256 $base_color)" \
+        "$(_fmt_256 $exit_color)" "$_YAK_FINAL_EXIT" \
+        "$(_fmt_256 $base_color)" \
+        "$(_fmt_256 $time_color)" "${time_str}" \
+        "$(_fmt_256 $base_color)" \
+        "$exit_explain"
+
+    unset _YAK_COMMAND_START_TIME
+    unset _YAK_COMMAND_END_TIME
+    unset _YAK_FINAL_EXIT
+    unset _YAK_EXIT
+}
+
+function _explain_exit_code() {
+    local exit_code=$1
+
+    local SIG_MAX=64
+    local EXIT_SIG_MIN=128
+    local EXIT_SIG_MAX=$((EXIT_SIG_MIN + SIG_MAX))
+
+    local msg=''
+    local sig
+    local signame
+
+    case $exit_code in
+    # Ref: https://tldp.org/LDP/abs/html/exitcodes.html
+    1)   msg='general warning/error' ;;
+    2)   msg='general error' ;;
+    126) msg='command invoked cannot execute' ;;
+    127) msg='command not found' ;;
+    1[2-9]?)
+        if (( EXIT_SIG_MIN <= exit_code && exit_code < EXIT_SIG_MAX )); then
+            sig=$((exit_code - EXIT_SIG_MIN))
+            signame=$(kill -l $sig)
+            msg="$exit_code - $EXIT_SIG_MIN = $sig, SIG$signame"
+        fi
+        ;;
+
+    # Ref: /usr/include/sysexits.h
+    64)  msg='EX_USAGE: command line usage error' ;;
+    65)  msg='EX_DATAERR: data format error' ;;
+    66)  msg='EX_NOINPUT: cannot open input' ;;
+    67)  msg='EX_NOUSER: addressee unknown' ;;
+    68)  msg='EX_NOHOST: host name unknown' ;;
+    69)  msg='EX_UNAVAILABLE: service unavailable' ;;
+    70)  msg='EX_SOFTWARE: internal software error' ;;
+    71)  msg="EX_OSERR: system error (e.g., can't fork)" ;;
+    72)  msg='EX_OSFILE: critical OS file missing' ;;
+    73)  msg="EX_CANTCREAT: can't create (user) output file" ;;
+    74)  msg='EX_IOERR: input/output error' ;;
+    75)  msg='EX_TEMPFAIL: temp failure; user is invited to retry' ;;
+    76)  msg='EX_PROTOCOL: remote error in protocol' ;;
+    77)  msg='EX_NOPERM: permission denied' ;;
+    78)  msg='EX_CONFIG: configuration error' ;;
+    esac
+
+    if [ -n "$msg" ]; then
+        printf '%s' "$msg";
+    fi
 }
 
 function _fmt_256() {
@@ -523,37 +574,42 @@ preexec_invoke_exec () {
     local EXIT="$?"
 
     ###
+    # Save the exit code of the last command, so we can print it out in our PROMPT_COMMAND
+    #
+    _YAK_EXIT="$EXIT"
+
+    ###
     # do nothing if completing
     #
-    [ -n "$COMP_LINE" ] && return
+    [ -n "$COMP_LINE" ] && return $EXIT
+
+    ###
+    # if no command is being executed (idk how), ignore it
+    #
+    [[ -z "$BASH_COMMAND" ]] && return $EXIT;
+
+    ###
+    # don't print anything for the prompt command
+    #
+    [ "$BASH_COMMAND" = "$PROMPT_COMMAND" ] && return $EXIT
 
     ###
     # allow manual omission of START line
     #  (including start-of-line env var cases, e.g. `DISABLE_START_LINE=true echo hi`)
     #
     if [ -n "$DISABLE_START_LINE" ] || [[ "$BASH_COMMAND" == DISABLE_START_LINE=* ]]; then
-        return
+        return $EXIT
     fi
-
-    ###
-    # if no command is being executed (idk how), ignore it
-    #
-    [[ -z "$BASH_COMMAND" ]] && return;
-
-    ###
-    # don't print anything for the prompt command
-    #
-    [ "$BASH_COMMAND" = "$PROMPT_COMMAND" ] && return
 
     ###
     # ignore z (the weighting chdir command) performing its calculations
     #
-    [[ "$BASH_COMMAND" == _z* ]] && return;
+    [[ "$BASH_COMMAND" == _z* ]] && return $EXIT;
 
     ###
     # ignore hooks from direnv (the per-directory .env file sourcer)
     #
-    [[ "$BASH_COMMAND" == _direnv_hook* ]] && return;
+    [[ "$BASH_COMMAND" == _direnv_hook* ]] && return $EXIT;
 
     ###
     # Print the start line
@@ -574,10 +630,7 @@ preexec_invoke_exec () {
         _YAK_COMMAND_START_TIME=$(date '+%s%N')
     fi
 
-    ###
-    # Save the exit code of the last command, so we can print it out in our PROMPT_COMMAND
-    #
-    _YAK_EXIT="$EXIT"
+    return $EXIT
 }
 
 
