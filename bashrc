@@ -453,7 +453,12 @@ preexec_invoke_exec () {
     ###
     # Print the start line
     #
-    echo -e '# \x1B[0;31m'`cat /tmp/.$$.cmdnum 2>/dev/null || echo 1`'\x1B[m' '\x1B[1;32m'`date +%T` '\x1B[0;32m'`date +'%Y/%m/%d'`'\x1B[m '$YAK_START_SYMBOL' \x1B[0;34m'$BASH_COMMAND'\x1B[m'
+    printf '# \x1B[0;31m%s\x1B[m \x1B[1;32m%s \x1B[0;32m%s\x1B[m %s \x1B[0;34m%s\x1B[m\n' \
+        "$(cat /tmp/.$$.cmdnum 2>/dev/null || echo 1)" \
+        "$(date +%T)" \
+        "$(date +'%Y/%m/%d')" \
+        "$YAK_START_SYMBOL" \
+        "$BASH_COMMAND"
 }
 
 
