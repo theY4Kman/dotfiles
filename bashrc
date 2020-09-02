@@ -237,7 +237,7 @@ _complete_ssh_hosts ()
 }
 
 # By default, OSX doesn't autocomplete hosts in .ssh/config
-if [[ "$OSTYPE" == "darwin"* ]]; then
+if [[ -z "$DISABLE_OSX_SSH_COMPLETION" ]] && [[ "$OSTYPE" == "darwin"* ]]; then
     complete -F _complete_ssh_hosts ssh
 fi
 
