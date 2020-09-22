@@ -109,6 +109,9 @@ alias ll='ls -l'
 alias lla='ls -la'
 alias la='ls -la'  # come on, i don't really ever want just `ls -a`
 
+# human-readable defaults
+alias ls='ls --color=auto -h'
+
 # sudo
 alias sudoi='sudo -i'
 
