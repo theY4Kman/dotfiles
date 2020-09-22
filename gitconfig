@@ -20,6 +20,11 @@
     alias = config --get-regexp ^alias\\.
     amend = commit --amend --no-edit
 
+    # Clone, then cd into the directory
+    #clonecd = "!f() { OUTPUT=$(git clone \"$@\"); REPO=$(echo \"$OUTPUT\" | grep 'Cloning into' | sed \"s/Cloning into '\(.*\)'.../\\1/\"); [ -n \"$REPO\" ] && cd \"$REPO\"; }; f"
+    #clonecd = "!f() { REMOTE=\"$1\"; REPO=$(echo \"$REMOTE\" | sed 's/.*[:/]\\([^:/]*\\)\(\\.git\\)*$/\\1/'); git clone \"$@\" || return $?; cd \"$REPO\"; }; f"
+    clonecd = "!f() { REMOTE=\"$1\"; REPO=$(echo \"$REMOTE\" ); echo \"$REPO\"; }; f"
+
     # Drunk aliases
     pus = push
     psuh = push
