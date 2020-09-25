@@ -8,5 +8,5 @@ WAFFLESCRIPT_ASSET_URL="https://github.com/wffls/wafflescript/releases/download/
 
 if [ ! -f "$WAFFLESCRIPT_PATH" ]; then
   echo "Downloading wafflescript from ${WAFFLESCRIPT_ASSET_URL}"
-  curl --location "$WAFFLESCRIPT_ASSET_URL" | tar -xvzf -
+  curl --location "$WAFFLESCRIPT_ASSET_URL" | tar -xvzf - -C "$INSTALL_DIR"
 fi
