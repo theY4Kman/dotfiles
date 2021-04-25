@@ -320,7 +320,7 @@ fi
 
 function __conda_ps1
 {
-    if [[ "$CONDA_DEFAULT_ENV" != "base" ]]; then
+    if [[ ! -z "$CONDA_DEFAULT_ENV" ]] && [[ "$CONDA_DEFAULT_ENV" != "base" ]]; then
         echo "[conda:${CONDA_DEFAULT_ENV}]"
     fi
 }
