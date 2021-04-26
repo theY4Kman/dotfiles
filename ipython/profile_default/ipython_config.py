@@ -29,7 +29,6 @@ import prompt_toolkit
 from prompt_toolkit import keys, application, VERSION as PTK_VERSION
 from prompt_toolkit.input import ansi_escape_sequences, vt100_parser
 from prompt_toolkit.key_binding import key_bindings, key_processor
-from traitlets.config import Config
 
 
 IS_PTK2 = IS_PTK3 = False
@@ -40,7 +39,7 @@ elif ('2',) <= PTK_VERSION < ('3',):
     IS_PTK2 = True
 
 
-def install_prompt_customizations(c: Config) -> None:
+def install_prompt_customizations() -> None:
     if hasattr(prompt_toolkit, 'READLINE_CUSTOMIZATIONS_INSTALLED'):
         # Already installed
         return
@@ -109,4 +108,4 @@ def install_prompt_customizations(c: Config) -> None:
     prompt_toolkit.READLINE_CUSTOMIZATIONS_INSTALLED = True
 
 
-install_prompt_customizations(c)
+install_prompt_customizations()
