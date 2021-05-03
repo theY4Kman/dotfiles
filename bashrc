@@ -93,6 +93,29 @@ function mkvirtualenvhere() {
 }
 
 
+#########################
+# GIT/HUB FUNCTIONALITY #
+#########################
+
+# The default branch to use with the `gm` alias (and others)
+YAK_GIT_DEFAULT_BRANCH='master'
+
+###
+# Convenience method to pull the default branch of a repo from GitHub
+#
+#  It will use the GitHub owner/repo from the git repo in $PWD by default,
+#  but other values may be passed as `_github_get_default_branch "owner" "repo"`
+#
+function _github_get_default_branch() {
+    OWNER="${1:-"{owner}"}"
+    REPO="${2:-"{repo}"}"
+
+    if command -v hub &> /dev/null; then
+        hub api "/repos/$OWNER/$REPO" | jq .default_branch -r
+    fi
+}
+
+
 
 ###########
 # ALIASES #
@@ -122,17 +145,17 @@ alias syi="sudo yum install"
 # git-related
 alias gs="git status"
 alias gl="git log"
-alias gm="git checkout master"
+function gm() { git checkout "${YAK_GIT_DEFAULT_BRANCH}"; }
 alias gd="git diff"
 alias gdc="git diff --cached"
 alias gaa="git add --all"
-alias gmm="git merge master"
+function gmm() { git merge "${YAK_GIT_DEFAULT_BRANCH}"; }
 alias gfa="git fetch --all"
 alias gfap="git fetch --all --prune"
 alias gfapr="git fetch --all --prune && git rebase"
 alias gr="git rebase"
-alias gorm="git rebase origin/master"
-alias grm="git rebase master"
+function gorm() { git rebase "origin/${YAK_GIT_DEFAULT_BRANCH}"; }
+function grm() { git rebase "${YAK_GIT_DEFAULT_BRANCH}"; }
 
 # python
 alias pipfile="pipenv"  # sue me
