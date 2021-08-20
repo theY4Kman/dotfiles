@@ -54,6 +54,28 @@ bind '\C-a:beginning-of-line'
 bind '\C-e:end-of-line'
 
 
+####################
+# ALIAS COMPLETION #
+####################
+# Setup cykerway/complete-alias, which lets us perform bash completions
+# on arbitrary aliases (with or without trailing arguments!)
+# See https://github.com/cykerway/complete-alias
+#
+COMPLETE_ALIAS_PATH="${REPO_DIR}/complete-alias/complete_alias"
+if [ -e "$COMPLETE_ALIAS_PATH" ]; then
+    . "$COMPLETE_ALIAS_PATH"
+    _YAK_HAS_COMPLETE_ALIAS=true
+fi
+
+function _add_alias() {
+    if [ -n "$_YAK_HAS_COMPLETE_ALIAS" ]; then
+        for name in "$@"; do
+            complete -F _complete_alias "$name"
+        done
+    fi
+}
+
+
 #####
 # Z #
 #####
@@ -131,16 +153,19 @@ alias l='ls'
 alias ll='ls -l'
 alias lla='ls -la'
 alias la='ls -la'  # come on, i don't really ever want just `ls -a`
+_add_alias l ll lla la
 
 # human-readable defaults
 alias ls='ls --color=auto -h'
 
 # sudo
 alias sudoi='sudo -i'
+_add_alias sudoi
 
 # Package management
 alias sai="sudo apt-get install"
 alias syi="sudo yum install"
+_add_alias sai syi
 
 # git-related
 alias gs="git status"
@@ -156,6 +181,7 @@ alias gfapr="git fetch --all --prune && git rebase"
 alias gr="git rebase"
 function gorm() { git rebase "origin/${YAK_GIT_DEFAULT_BRANCH}"; }
 function grm() { git rebase "${YAK_GIT_DEFAULT_BRANCH}"; }
+_add_alias gs gl gd gdc gaa gfa gfap gfapr gr
 
 # python
 alias pipfile="pipenv"  # sue me
@@ -167,11 +193,13 @@ alias pmpsp="pmp shell_plus"
 alias pmpdb="pmp dbshell"
 # Matching hivelocity
 alias djp="django-admin.py"
+_add_alias pmp pmps pmpsp pmpdb djp
 
 # terraform, thx keene
 alias tf=terraform
 alias terraform-graph='dot -Tpng <(terraform graph) | open -a Preview.app -f'
 alias tf-graph=terraform-graph
+_add_alias tf terraform-graph tf-graph
 
 
 #################
@@ -180,12 +208,14 @@ alias tf-graph=terraform-graph
 
 alias sssh="ssh"
 alias amke="make"
+_add_alias sssh amke
 
 alias got="git"
 alias gut="git"
 alias guit="git"
 alias goit="git"
 alias giot="git"
+_add_alias got gut guit goit giot
 
 alias pyhton="python"
 alias pyhton2="python2"
@@ -195,10 +225,17 @@ alias "pyhton2.7"="python2.7"
 alias pyhton3="python3"
 alias "pyhton3.5"="python3.5"
 alias "pyhton3.6"="python3.6"
+alias "pyhton3.7"="python3.7"
+alias "pyhton3.8"="python3.8"
+alias "pyhton3.9"="python3.9"
+alias "pyhton3.10"="python3.10"
+_add_alias pyhton pyhton2 pyhton2.5 pyhton2.6 pyhton2.7 pyhton3 pyhton3.5 \
+    pyhton3.6 pyhton3.7 pyhton3.8 pyhton3.9 pyhton3.10
 
 alias nom="npm"
 alias npom="npm"
 alias nopm="npm"
+_add_alias nom npom nopm
 
 
 ###########

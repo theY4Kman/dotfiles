@@ -1,3 +1,6 @@
 [submodule "z"]
 	path = z
 	url = https://github.com/theY4Kman/z.git
+[submodule "complete-alias"]
+	path = complete-alias
+	url = https://github.com/cykerway/complete-alias
