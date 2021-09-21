@@ -381,7 +381,10 @@ fi
 function __conda_ps1
 {
     if [[ ! -z "$CONDA_DEFAULT_ENV" ]] && [[ "$CONDA_DEFAULT_ENV" != "base" ]]; then
-        echo "[conda:${CONDA_DEFAULT_ENV}]"
+        if [ -z "${PYTHON_VERSION+x}" ]; then
+            PYTHON_VERSION="$(python -V 2>&1 | awk '{print $NF}')"
+        fi
+        echo "[conda:${CONDA_DEFAULT_ENV} :: $PYTHON_VERSION]"
     fi
 }
 
