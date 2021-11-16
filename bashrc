@@ -170,7 +170,7 @@ _add_alias sai syi
 # git-related
 alias gs="git status"
 alias gl="git log"
-function gm() { git checkout "${YAK_GIT_DEFAULT_BRANCH}"; }
+function gm() { git checkout "${YAK_GIT_DEFAULT_BRANCH:master}"; }
 alias gd="git diff"
 alias gdc="git diff --cached"
 alias gaa="git add --all"
