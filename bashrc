@@ -418,6 +418,14 @@ function __conda_ps1
 # inside an `echo -e`. So, we output some newlines as the ASCII code \012
 # Ref: https://stackoverflow.com/a/37074809
 
+# Directory to store cmdnum files, which power the command number displays
+# outside of PS1 (and where the PS1 will store them)
+YAK_TMPDIR='/tmp'
+if [ -d '/dev/shm' ]; then
+    # Prefer memory-based temp dir
+    YAK_TMPDIR='/dev/shm'
+fi
+
 ps1_user() {
     user="${USER:-${USERNAME:-$(whoami)}}"
 
@@ -433,7 +441,7 @@ ps1_user() {
 
 ps1_line1='# \[\e[0;31m\]\#\[\e[m\] \[\e[1;32m\]\t\[\e[m\] \[\e[0;32m\]\D{%Y/%m/%d}\[\e[m\] `ps1_user`\[\e[90m\]@${HOSTNAME:=$(hostname)}$([ -z "$HIDE_HOSTNAME_WARNING" ] && echo -e " \[\e[41m\e[97m\][!]")\[\e[m\]'
 ps1_line2='# \[\e[1;33m\]\w\[\e[m\]'
-ps1_line3='#\[\e[0;35m\]$(__git_ps1)$(svn_branch)\[\e[m\] \[\e[0;33m\]$(__venv_ps1)$(__conda_ps1)\[\e[m\]\012`echo \# > ${TMPDIR:-/tmp}/.$$.cmdnum`'
+ps1_line3='#\[\e[0;35m\]$(__git_ps1)$(svn_branch)\[\e[m\] \[\e[0;33m\]$(__venv_ps1)$(__conda_ps1)\[\e[m\]\012`echo \# > ${YAK_TMPDIR:-/tmp}/.$$.cmdnum`'
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     ps1_marker='\[$(iterm2_prompt_mark)\]'
@@ -543,7 +551,7 @@ function _yak_command_summary() {
     fi
 
     # Use the width of the cmdnum to ensure spacing is consistent with next prompt
-    local cmdnum=$(cat ${TMPDIR:-/tmp}/.$$.cmdnum)
+    local cmdnum=$(cat ${YAK_TMPDIR:-/tmp}/.$$.cmdnum)
     local next_cmdnum=$((cmdnum + 1))
     local next_cmdnum_spacing="${next_cmdnum//?/ }"
     local exit_icon_spacing="${next_cmdnum_spacing:1}"
@@ -718,7 +726,7 @@ preexec_invoke_exec () {
     # Print the start line
     #
     printf '# \x1B[0;31m%s\x1B[m \x1B[1;32m%s \x1B[0;32m%s\x1B[m %s \x1B[0;34m%s\x1B[m\n' \
-        "$(cat /tmp/.$$.cmdnum 2>/dev/null || echo 1)" \
+        "$(cat ${YAK_TMPDIR}/.$$.cmdnum 2>/dev/null || echo 1)" \
         "$(date +%T)" \
         "$(date +'%Y/%m/%d')" \
         "$YAK_START_SYMBOL" \
