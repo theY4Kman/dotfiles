@@ -630,9 +630,12 @@ function _fmt_256() {
 }
 
 PROMPT_COMMAND="
-  DISABLE_START_LINE=1 _yak_command_post;
+  DISABLE_START_LINE=\$DISABLE_START_LINE _OLD_DISABLE_START_LINE=\$DISABLE_START_LINE;
+  DISABLE_START_LINE=1;
+  _yak_command_post;
   $PROMPT_COMMAND
-  DISABLE_START_LINE=1 _yak_command_summary;
+  _yak_command_summary;
+  DISABLE_START_LINE=\$_OLD_DISABLE_START_LINE;
 "
 
 
@@ -698,11 +701,6 @@ preexec_invoke_exec () {
     # if no command is being executed (idk how), ignore it
     #
     [[ -z "$BASH_COMMAND" ]] && return $EXIT;
-
-    ###
-    # don't print anything for the prompt command
-    #
-    [ "$BASH_COMMAND" = "$PROMPT_COMMAND" ] && return $EXIT
 
     ###
     # allow manual omission of START line
