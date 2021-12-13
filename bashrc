@@ -201,6 +201,13 @@ alias terraform-graph='dot -Tpng <(terraform graph) | open -a Preview.app -f'
 alias tf-graph=terraform-graph
 _add_alias tf terraform-graph tf-graph
 
+# pbcopy/pbpaste for X11
+#  (these commands exist on OSX for copy/pasting from terminal, and are just a delight)
+if type xclip >/dev/null 2>&1; then
+    alias pbcopy='xclip -selection clipboard -in'
+    alias pbpaste='xclip -selection clipboard -out'
+fi
+
 
 #################
 # DRUNK ALIASES #
