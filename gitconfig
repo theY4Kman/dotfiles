@@ -23,7 +23,8 @@
     # Clone, then cd into the directory
     #clonecd = "!f() { OUTPUT=$(git clone \"$@\"); REPO=$(echo \"$OUTPUT\" | grep 'Cloning into' | sed \"s/Cloning into '\(.*\)'.../\\1/\"); [ -n \"$REPO\" ] && cd \"$REPO\"; }; f"
     #clonecd = "!f() { REMOTE=\"$1\"; REPO=$(echo \"$REMOTE\" | sed 's/.*[:/]\\([^:/]*\\)\(\\.git\\)*$/\\1/'); git clone \"$@\" || return $?; cd \"$REPO\"; }; f"
-    clonecd = "!f() { REMOTE=\"$1\"; REPO=$(echo \"$REMOTE\" ); echo \"$REPO\"; }; f"
+    #clonecd = "!f() { REMOTE=\"$1\"; REPO=$(echo \"$REMOTE\" ); echo \"$REPO\"; }; f"
+    clonecd = "!f() { OUTPUT=$(\"$_\" clone --progress \"$@\" 2>&1 | tee /dev/tty); REPO=$(echo \"$OUTPUT\" | sed -n \"s/^Cloning into '\\([^']\\+\\)'...$/\\1/p\"); [ -n \"$REPO\" ] && cd \"$REPO\"; }; f"
 
     # Drunk aliases
     pus = push
