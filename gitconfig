@@ -49,11 +49,11 @@
     # Source: https://csswizardry.com/2017/05/little-things-i-like-to-do-with-git/
     stats = shortlog -sn
     praise = blame
-    recent = "!f() { git for-each-ref --count=\"${1+10}\" --sort=-committerdate refs/heads/ --format=\"%(refname:short)\"; } f"
+    recent = "!f() { git for-each-ref --count=\"${2+10}\" --sort=-committerdate refs/heads/ --format=\"%(refname:short)\"; } f"
     overview-all = log --all --oneline --no-merges
     overview = log --all --since='2 weeks' --oneline --no-merges
-    recap = log --all --oneline --no-merges --author="zach@usstudentloancenter.org"
-    today = log --since=00:00:00 --all --no-merges --oneline --author="zach@usstudentloancenter.org"
+    recap = log --all --oneline --no-merges --author="^(zach|z|they4kman)@.*"
+    today = recap --since=00:00:00
     graph = log --graph --all --decorate --stat --date=iso
 
     # Ignoring files
