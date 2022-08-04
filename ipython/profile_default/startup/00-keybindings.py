@@ -4,14 +4,13 @@ def __initialize_custom_keybindings():
     from prompt_toolkit.filters import (
         Condition,
         emacs_insert_mode,
-        has_selection,
         in_paste_mode,
         is_multiline,
         vi_insert_mode,
     )
     from prompt_toolkit.key_binding.bindings.named_commands import get_by_name, register
-    from prompt_toolkit.key_binding.key_processor import KeyPress, KeyPressEvent
-    from prompt_toolkit.keys import Keys
+    from prompt_toolkit.key_binding.key_bindings import KeyBindings
+    from prompt_toolkit.key_binding.key_processor import KeyPressEvent
 
 
     IS_PTK2 = IS_PTK3 = False
@@ -27,9 +26,16 @@ def __initialize_custom_keybindings():
     @register('insert-line-above')
     def _(event: E) -> None:
         """
-        Newline, before current (in case of multiline input.
+        Newline, before current (in case of multiline input)
         """
         event.current_buffer.insert_line_above(copy_margin=not in_paste_mode())
+
+    @register('insert-line-below')
+    def _(event: E) -> None:
+        """
+        Newline, after current (in case of multiline input)
+        """
+        event.current_buffer.insert_line_below(copy_margin=not in_paste_mode())
 
     @register('accept-buffer')
     def _(event: E) -> None:
@@ -44,18 +50,18 @@ def __initialize_custom_keybindings():
     def has_text_before_cursor() -> bool:
         return bool(get_app().current_buffer.text)
 
-    kb = get_ipython().pt_app.key_bindings
+    kb: KeyBindings = get_ipython().pt_app.key_bindings
 
-    kb.add('c-backspace') \
-        (get_by_name('backward-kill-word'))
+    kb.add('c-backspace')(
+        get_by_name('backward-kill-word'))
 
-    kb.add('c-enter', filter=insert_mode & is_multiline) \
-        (get_by_name('insert-line-above'))
-    kb.add('s-enter', filter=insert_mode & is_multiline) \
-        (get_by_name('insert-line-above'))
+    kb.add('c-enter', filter=insert_mode)(
+        get_by_name('insert-line-above'))
+    kb.add('s-enter', filter=insert_mode)(
+        get_by_name('insert-line-below'))
 
-    kb.add('c-s-enter') \
-        (get_by_name('accept-buffer'))
+    kb.add('c-s-enter')(
+        get_by_name('accept-buffer'))
 
     if IS_PTK2:
         @register("beginning-of-buffer")
