@@ -1,30 +1,54 @@
 REPO_DIR=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd )
 
-# Disables history expansion (so I can put exclamation marks in double-quoted 
-# commit messages without bash complaining all over me. Pfft, LIKE I CARE, BASH!)
-set +H
-
 
 ###########
-# HISTORY #
+# EXPORTS #
 ###########
+# Add my scripts under bin/ to the $PATH
+export PATH="$PATH:$REPO_DIR/bin"
 
-# Append to .bash_history on session close, instead of overwriting
-shopt -s histappend
+# Add OS/arch-specific variant binaries to $PATH
+# NOTE: these conditions were lifted from https://stackoverflow.com/a/8597411/148585
+case $(uname | tr '[:upper:]' '[:lower:]') in
+  linux*)
+    _YAK_BIN_OSTYPE=linux
+    ;;
+  darwin*)
+    _YAK_BIN_OSTYPE=darwin
+    ;;
+  msys*)
+    _YAK_BIN_OSTYPE=windows
+    ;;
+  *)
+    _YAK_BIN_OSTYPE=unknown
+    ;;
+esac
+_YAK_BIN_ARCH="$(uname -m)"  # see https://unix.stackexchange.com/questions/12453/how-to-determine-linux-kernel-architecture#comment570537_12454
 
-# Essentially disable history file truncation
-export HISTFILESIZE=1000000
-export HISTSIZE=1000000
+export PATH="$PATH:$REPO_DIR/bin/$_YAK_BIN_ARCH-$_YAK_BIN_OSTYPE"
 
-# Store full date and time for each history line
-export HISTTIMEFORMAT='%F %T '
+# Select vim if it exists, fallback to vi
+export EDITOR=`hash vim 2>/dev/null && echo vim || echo vi`
 
-# Condense multi-line commands to one line
-shopt -s cmdhist
+# Show an asterisk by git branch if working directory is dirty/has changes
+export GIT_PS1_SHOWDIRTYSTATE=true
+# We override the default venv display, so disable it
+export VIRTUAL_ENV_DISABLE_PROMPT=true
 
-# Ignore duplicate commands
-export HISTCONTROL="ignoredups"
+# On Termux (Android), the hostname command will always return "localhost"
+# The "true" hostname can only be retrieved through the Termux APIs
+if command -v termux-setup-storage >/dev/null 2>&1; then
+    export HOSTNAME="$(getprop net.hostname)"
+    export HOSTNAME_TERMUX=1
+fi
 
+# I've seen the PROMPT_COMMAND get filled when root, and it ends up printing many
+# unnecessary lines, and I don't want that clutter. The command in particular
+# (printf "" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/~}") doesn't seem to print
+# anything, anyways. So, if we're root, I'm going to clear PROMPT_COMMAND
+if [[ $EUID == 0 ]] && [[ $PROMPT_COMMAND == printf* ]]; then
+    export PROMPT_COMMAND=""
+fi
 
 
 ############
@@ -52,6 +76,49 @@ bind '"\C-u":backward-kill-line'
 # Fix Ctrl-A and Ctrl-E
 bind '\C-a:beginning-of-line'
 bind '\C-e:end-of-line'
+
+
+###########
+# HISTORY #
+###########
+
+# Disables history expansion (so I can put exclamation marks in double-quoted
+# commit messages without bash complaining all over me. Pfft, LIKE I CARE, BASH!)
+set +H
+
+# Append to .bash_history on session close, instead of overwriting
+shopt -s histappend
+
+# Essentially disable history file truncation
+export HISTFILESIZE=1000000
+export HISTSIZE=1000000
+
+# Store full date and time for each history line
+export HISTTIMEFORMAT='%F %T '
+
+# Condense multi-line commands to one line
+shopt -s cmdhist
+
+# Ignore duplicate commands
+export HISTCONTROL="ignoredups"
+
+# Initialize McFly — https://github.com/cantino/mcfly
+if hash mcfly 2>/dev/null; then
+    # We must add mcfly to our PROMPT_COMMAND manually; otherwise, it will show up
+    # in every command start line.
+    _OLD_PROMPT_COMMAND="$PROMPT_COMMAND"
+    eval "$(mcfly init bash)"
+    PROMPT_COMMAND="$_OLD_PROMPT_COMMAND"
+    _YAK_MCFLY_PROMPT_COMMAND="DISABLE_START_LINE=1 mcfly_prompt_command;"
+
+    # Disable the McFly menu bar
+    export MCFLY_DISABLE_MENU=TRUE
+
+    # Rebind McFly's Control-R to hide its stuff from showing in command start lines
+    if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
+        bind -x '"\C-r": "DISABLE_START_LINE=$DISABLE_START_LINE _OLD_DISABLE_START_LINE=$DISABLE_START_LINE; DISABLE_START_LINE=1; echo \#mcfly: ${READLINE_LINE[@]} >> $MCFLY_HISTORY; READLINE_LINE=; mcfly search; DISABLE_START_LINE=$_OLD_DISABLE_START_LINE"'
+    fi
+fi
 
 
 ####################
@@ -245,36 +312,6 @@ alias nopm="npm"
 _add_alias nom npom nopm
 
 
-###########
-# EXPORTS #
-###########
-# Add my scripts under bin/ to the $PATH
-export PATH="$PATH:$REPO_DIR/bin"
-
-# Select vim if it exists, fallback to vi
-export EDITOR=`hash vim 2>/dev/null && echo vim || echo vi`
-
-# Show an asterisk by git branch if working directory is dirty/has changes
-export GIT_PS1_SHOWDIRTYSTATE=true
-# We override the default venv display, so disable it
-export VIRTUAL_ENV_DISABLE_PROMPT=true
-
-# On Termux (Android), the hostname command will always return "localhost"
-# The "true" hostname can only be retrieved through the Termux APIs
-if command -v termux-setup-storage >/dev/null 2>&1; then
-    export HOSTNAME="$(getprop net.hostname)"
-    export HOSTNAME_TERMUX=1
-fi
-
-# I've seen the PROMPT_COMMAND get filled when root, and it ends up printing many
-# unnecessary lines, and I don't want that clutter. The command in particular
-# (printf "" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/~}") doesn't seem to print
-# anything, anyways. So, if we're root, I'm going to clear PROMPT_COMMAND
-if [[ $EUID == 0 ]] && [[ $PROMPT_COMMAND == printf* ]]; then
-    export PROMPT_COMMAND=""
-fi
-
-
 ################
 # AUTOCOMPLETE #
 ################
@@ -289,21 +326,21 @@ fi
 
 _complete_ssh_hosts ()
 {
-        COMPREPLY=()
-        cur="${COMP_WORDS[COMP_CWORD]}"
-        comp_ssh_hosts=$(
-          cat ~/.ssh/known_hosts | \
-              cut -f 1 -d ' ' | \
-              sed -e s/,.*//g | \
-              grep -v ^# | \
-              uniq | \
-              grep -v "\[" ;
-          cat ~/.ssh/config | \
-              grep "^Host " | \
-              awk '{print $2}'
-        )
-        COMPREPLY=( $(compgen -W "${comp_ssh_hosts}" -- $cur))
-        return 0
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    comp_ssh_hosts=$(
+      cat ~/.ssh/known_hosts | \
+          cut -f 1 -d ' ' | \
+          sed -e s/,.*//g | \
+          grep -v ^# | \
+          uniq | \
+          grep -v "\[" ;
+      cat ~/.ssh/config | \
+          grep "^Host " | \
+          awk '{print $2}'
+    )
+    COMPREPLY=( $(compgen -W "${comp_ssh_hosts}" -- $cur))
+    return 0
 }
 
 # By default, OSX doesn't autocomplete hosts in .ssh/config
@@ -637,6 +674,7 @@ function _fmt_256() {
 }
 
 PROMPT_COMMAND="
+  $_YAK_MCFLY_PROMPT_COMMAND
   DISABLE_START_LINE=1 _yak_command_post;
   DISABLE_START_LINE=\$DISABLE_START_LINE _OLD_DISABLE_START_LINE=\$DISABLE_START_LINE;
   DISABLE_START_LINE=1;
@@ -752,9 +790,3 @@ preexec_invoke_exec () {
 
 trap 'clean_ps1_cmdnum_file' EXIT;
 trap 'preexec_invoke_exec' DEBUG;
-
-
-# Load all history from historian
-# Performed down here, so commands run in our .bashrc don't get recorded
-# https://github.com/jcsalterego/historian
-DISABLE_START_LINE=true "${REPO_DIR}/bin/hist" import > /dev/null
