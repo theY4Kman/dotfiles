@@ -114,6 +114,12 @@ if hash mcfly 2>/dev/null; then
     # Disable the McFly menu bar
     export MCFLY_DISABLE_MENU=TRUE
 
+    # Show as many results as screen can fit
+    export MCFLY_RESULTS=100
+
+    # Show text entry at bottom, pressing Up to select lower-ranked results
+    export MCFLY_INTERFACE_VIEW=BOTTOM
+
     # Rebind McFly's Control-R to hide its stuff from showing in command start lines
     if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
         bind -x '"\C-r": "DISABLE_START_LINE=$DISABLE_START_LINE _OLD_DISABLE_START_LINE=$DISABLE_START_LINE; DISABLE_START_LINE=1; echo \#mcfly: ${READLINE_LINE[@]} >> $MCFLY_HISTORY; READLINE_LINE=; mcfly search; DISABLE_START_LINE=$_OLD_DISABLE_START_LINE"'
