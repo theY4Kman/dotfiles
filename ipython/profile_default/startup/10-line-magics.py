@@ -26,7 +26,10 @@ def __initialize_custom_line_magics():
                                         for cls in type(value).__mro__)
             return {k: getattr(value, k, None) for k in slots}
         else:
-            return None
+            return {
+                k: getattr(value, k, None)
+                for k in dir(value)
+            }
 
     @register_value_magic
     def p(value):

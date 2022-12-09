@@ -1,11 +1,11 @@
 def __initialize_custom_keybindings():
+    from IPython import InteractiveShell
     from prompt_toolkit import VERSION as PTK_VERSION
     from prompt_toolkit.application.current import get_app
     from prompt_toolkit.filters import (
         Condition,
         emacs_insert_mode,
         in_paste_mode,
-        is_multiline,
         vi_insert_mode,
     )
     from prompt_toolkit.key_binding.bindings.named_commands import get_by_name, register
@@ -19,6 +19,8 @@ def __initialize_custom_keybindings():
         IS_PTK3 = True
     elif ('2',) <= PTK_VERSION < ('3',):
         IS_PTK2 = True
+
+    ipython: InteractiveShell = get_ipython()
 
 
     E = KeyPressEvent
@@ -50,7 +52,7 @@ def __initialize_custom_keybindings():
     def has_text_before_cursor() -> bool:
         return bool(get_app().current_buffer.text)
 
-    kb: KeyBindings = get_ipython().pt_app.key_bindings
+    kb: KeyBindings = ipython.pt_app.key_bindings
 
     kb.add('c-backspace')(
         get_by_name('backward-kill-word'))
@@ -92,4 +94,6 @@ def __initialize_custom_keybindings():
 
 __initialize_custom_keybindings()
 del __initialize_custom_keybindings
+
+# noinspection PyStatementEffect
 None  # hide output from ipython
