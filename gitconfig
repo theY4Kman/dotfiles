@@ -44,7 +44,7 @@
     #
     # Requires: https://github.com/p-gen/smenu
     #
-    reco = "!f() { BRANCH=$(git recent | smenu -l -n10); [ -n \"$BRANCH\" ] && echo && git checkout \"$BRANCH\"; }; f"
+    reco = "!f() { BRANCH=$(git recent -n ${1:-100} | smenu -l -n10); [ -n \"$BRANCH\" ] && echo && git checkout \"$BRANCH\"; }; f"
 
     # Source: https://csswizardry.com/2017/05/little-things-i-like-to-do-with-git/
     stats = shortlog -sn
