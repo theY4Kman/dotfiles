@@ -14,6 +14,7 @@ def __initialize_custom_keybindings():
 
 
     IS_PTK2 = IS_PTK3 = False
+    PTK_VERSION = tuple(str(p) for p in PTK_VERSION)
 
     if ('3',) <= PTK_VERSION < ('4',):
         IS_PTK3 = True

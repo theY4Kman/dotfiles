@@ -33,6 +33,8 @@ from prompt_toolkit.key_binding import key_bindings, key_processor
 
 IS_PTK2 = IS_PTK3 = False
 
+PTK_VERSION = tuple(str(p) for p in PTK_VERSION)
+
 if ('3',) <= PTK_VERSION < ('4',):
     IS_PTK3 = True
 elif ('2',) <= PTK_VERSION < ('3',):
