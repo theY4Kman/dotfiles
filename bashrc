@@ -120,6 +120,9 @@ if hash mcfly 2>/dev/null; then
     # Show text entry at bottom, pressing Up to select lower-ranked results
     export MCFLY_INTERFACE_VIEW=BOTTOM
 
+    # Write also to bash history file
+    MCFLY_HISTFILE="${HISTFILE:-~/.bash_history}"
+
     # Rebind McFly's Control-R to hide its stuff from showing in command start lines
     if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
         bind -x '"\C-r": "DISABLE_START_LINE=$DISABLE_START_LINE _OLD_DISABLE_START_LINE=$DISABLE_START_LINE; DISABLE_START_LINE=1; echo \#mcfly: ${READLINE_LINE[@]} >> $MCFLY_HISTORY; READLINE_LINE=; mcfly search; DISABLE_START_LINE=$_OLD_DISABLE_START_LINE"'
@@ -246,6 +249,7 @@ alias gl="git log"
 function gm() { git checkout "${YAK_GIT_DEFAULT_BRANCH:master}"; }
 alias gd="git diff"
 alias gdc="git diff --cached"
+alias ga="git add"
 alias gaa="git add --all"
 function gmm() { git merge "${YAK_GIT_DEFAULT_BRANCH}"; }
 alias gfa="git fetch --all"
@@ -770,6 +774,11 @@ preexec_invoke_exec () {
     # ignore hooks from direnv (the per-directory .env file sourcer)
     #
     [[ "$BASH_COMMAND" == _direnv_hook* ]] && return $EXIT;
+
+    ###
+    # ignore hooks from McFly (the fuzzy history searcher)
+    #
+    [[ "$BASH_COMMAND" == mcfly_prompt_command* ]] && return $EXIT;
 
     ###
     # Print the start line
