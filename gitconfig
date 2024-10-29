@@ -34,7 +34,7 @@
 
     # hub CLI aliases
     prco = pr checkout
-    prs = pr list
+    prs = pr list --format='%pC%>(8)%I%Creset  %t%  l%n'
 
     # Source: https://stackoverflow.com/a/25095062/148585
     recent = git-recent
