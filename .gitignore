@@ -4,3 +4,6 @@
 # Python bytecode
 *.pyc
 __pycache__/
+
+# Crap OSX crap
+.DS_Store
