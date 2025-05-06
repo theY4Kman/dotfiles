@@ -642,37 +642,128 @@ function _explain_exit_code() {
     local sig
     local signame
 
-    case $exit_code in
-    # Ref: https://tldp.org/LDP/abs/html/exitcodes.html
-    1)   msg='general warning/error' ;;
-    2)   msg='general error' ;;
-    126) msg='command invoked cannot execute' ;;
-    127) msg='command not found' ;;
-    1[2-9]?)
-        if (( EXIT_SIG_MIN <= exit_code && exit_code < EXIT_SIG_MAX )); then
-            sig=$((exit_code - EXIT_SIG_MIN))
-            signame=$(kill -l $sig)
-            msg="$exit_code - $EXIT_SIG_MIN = $sig, SIG$signame"
-        fi
-        ;;
+    if [[ $_YAK_LAST_COMMAND =~ ^\\?curl\  ]]; then
+        case $exit_code in
+        1)   msg="Unsupported protocol. This build of curl has no support for this protocol." ;;
+        2)   msg="Failed to initialize." ;;
+        3)   msg="URL malformed. The syntax was not correct." ;;
+        4)   msg="A feature or option that was needed to perform the desired request was not enabled or was explicitly disabled at build-time. To make curl able to do this, you probably need another build of libcurl!" ;;
+        5)   msg="Couldn't resolve proxy. The given proxy host could not be resolved." ;;
+        6)   msg="Couldn't resolve host. The given remote host was not resolved." ;;
+        7)   msg="Failed to connect to host." ;;
+        8)   msg="Weird server reply. The server sent data curl couldn't parse." ;;
+        9)   msg="FTP access denied. The server denied login or denied access to the particular resource or directory you wanted to reach. Most often you tried to change to a directory that doesn't exist on the server." ;;
+        10)  msg="FTP accept failed. While waiting for the server to connect back when an active FTP session is used, an error code was sent over the control connection or similar." ;;
+        11)  msg="FTP weird PASS reply. Curl couldn't parse the reply sent to the PASS request." ;;
+        12)  msg="During an active FTP session while waiting for the server to connect back to curl, the timeout expired." ;;
+        13)  msg="FTP weird PASV reply, Curl couldn't parse the reply sent to the PASV request." ;;
+        14)  msg="FTP weird 227 format. Curl couldn't parse the 227-line the server sent." ;;
+        15)  msg="FTP can't get host. Couldn't resolve the host IP we got in the 227-line." ;;
+        16)  msg="HTTP/2 error. A problem was detected in the HTTP2 framing layer. This is somewhat generic and can be one out of several problems, see the error message for details." ;;
+        17)  msg="FTP couldn't set binary. Couldn't change transfer method to binary." ;;
+        18)  msg="Partial file. Only a part of the file was transferred." ;;
+        19)  msg="FTP couldn't download/access the given file, the RETR (or similar) command failed." ;;
+        21)  msg="FTP quote error. A quote command returned error from the server." ;;
+        22)  msg="HTTP page not retrieved. The requested url was not found or returned another error with the HTTP error code being 400 or above. This return code only appears if -f, --fail is used." ;;
+        23)  msg="Write error. Curl couldn't write data to a local filesystem or similar." ;;
+        25)  msg="FTP couldn't STOR file. The server denied the STOR operation, used for FTP uploading." ;;
+        26)  msg="Read error. Various reading problems." ;;
+        27)  msg="Out of memory. A memory allocation request failed." ;;
+        28)  msg="Operation timeout. The specified time-out period was reached according to the conditions." ;;
+        30)  msg="FTP PORT failed. The PORT command failed. Not all FTP servers support the PORT command, try doing a transfer using PASV instead!" ;;
+        31)  msg="FTP couldn't use REST. The REST command failed. This command is used for resumed FTP transfers." ;;
+        33)  msg="HTTP range error. The range "command" didn't work." ;;
+        34)  msg="HTTP post error. Internal post-request generation error." ;;
+        35)  msg="SSL connect error. The SSL handshaking failed." ;;
+        36)  msg="Bad download resume. Couldn't continue an earlier aborted download." ;;
+        37)  msg="FILE couldn't read file. Failed to open the file. Permissions?" ;;
+        38)  msg="LDAP cannot bind. LDAP bind operation failed." ;;
+        39)  msg="LDAP search failed." ;;
+        41)  msg="Function not found. A required LDAP function was not found." ;;
+        42)  msg="Aborted by callback. An application told curl to abort the operation." ;;
+        43)  msg="Internal error. A function was called with a bad parameter." ;;
+        45)  msg="Interface error. A specified outgoing interface could not be used." ;;
+        47)  msg="Too many redirects. When following redirects, curl hit the maximum amount." ;;
+        48)  msg="Unknown option specified to libcurl. This indicates that you passed a weird option to curl that was passed on to libcurl and rejected. Read up in the manual!" ;;
+        49)  msg="Malformed telnet option." ;;
+        51)  msg="The peer's SSL certificate or SSH MD5 fingerprint was not OK." ;;
+        52)  msg="The server didn't reply anything, which here is considered an error." ;;
+        53)  msg="SSL crypto engine not found." ;;
+        54)  msg="Cannot set SSL crypto engine as default." ;;
+        55)  msg="Failed sending network data." ;;
+        56)  msg="Failure in receiving network data." ;;
+        58)  msg="Problem with the local certificate." ;;
+        59)  msg="Couldn't use specified SSL cipher." ;;
+        60)  msg="Peer certificate cannot be authenticated with known CA certificates." ;;
+        61)  msg="Unrecognized transfer encoding." ;;
+        62)  msg="Invalid LDAP URL." ;;
+        63)  msg="Maximum file size exceeded." ;;
+        64)  msg="Requested FTP SSL level failed." ;;
+        65)  msg="Sending the data requires a rewind that failed." ;;
+        66)  msg="Failed to initialise SSL Engine." ;;
+        67)  msg="The user name, password, or similar was not accepted and curl failed to log in." ;;
+        68)  msg="File not found on TFTP server." ;;
+        69)  msg="Permission problem on TFTP server." ;;
+        70)  msg="Out of disk space on TFTP server." ;;
+        71)  msg="Illegal TFTP operation." ;;
+        72)  msg="Unknown TFTP transfer ID." ;;
+        73)  msg="File already exists (TFTP)." ;;
+        74)  msg="No such user (TFTP)." ;;
+        75)  msg="Character conversion failed." ;;
+        76)  msg="Character conversion functions required." ;;
+        77)  msg="Problem with reading the SSL CA cert (path? access rights?)." ;;
+        78)  msg="The resource referenced in the URL does not exist.  " ;;
+        79)  msg="An unspecified error occurred during the SSH session." ;;
+        80)  msg="Failed to shut down the SSL connection." ;;
+        82)  msg="Could not load CRL file, missing or wrong format (added in 7.19.0)." ;;
+        83)  msg="Issuer check failed (added in 7.19.0)." ;;
+        84)  msg="The FTP PRET command failed" ;;
+        85)  msg="RTSP: mismatch of CSeq numbers" ;;
+        86)  msg="RTSP: mismatch of Session Identifiers" ;;
+        87)  msg="unable to parse FTP file list" ;;
+        88)  msg="FTP chunk callback reported error" ;;
+        89)  msg="No connection available, the session will be queued" ;;
+        90)  msg="SSL public key does not matched pinned public key" ;;
+        91)  msg="Invalid SSL certificate status." ;;
+        92)  msg="Stream error in HTTP/2 framing layer." ;;
+        esac
 
-    # Ref: /usr/include/sysexits.h
-    64)  msg='EX_USAGE: command line usage error' ;;
-    65)  msg='EX_DATAERR: data format error' ;;
-    66)  msg='EX_NOINPUT: cannot open input' ;;
-    67)  msg='EX_NOUSER: addressee unknown' ;;
-    68)  msg='EX_NOHOST: host name unknown' ;;
-    69)  msg='EX_UNAVAILABLE: service unavailable' ;;
-    70)  msg='EX_SOFTWARE: internal software error' ;;
-    71)  msg="EX_OSERR: system error (e.g., can't fork)" ;;
-    72)  msg='EX_OSFILE: critical OS file missing' ;;
-    73)  msg="EX_CANTCREAT: can't create (user) output file" ;;
-    74)  msg='EX_IOERR: input/output error' ;;
-    75)  msg='EX_TEMPFAIL: temp failure; user is invited to retry' ;;
-    76)  msg='EX_PROTOCOL: remote error in protocol' ;;
-    77)  msg='EX_NOPERM: permission denied' ;;
-    78)  msg='EX_CONFIG: configuration error' ;;
-    esac
+        if [ -n "$msg" ]; then
+            msg="curl: $msg"
+        fi
+    else
+        case $exit_code in
+        # Ref: https://tldp.org/LDP/abs/html/exitcodes.html
+        1)   msg='general warning/error' ;;
+        2)   msg='general error' ;;
+        126) msg='command invoked cannot execute' ;;
+        127) msg='command not found' ;;
+        1[2-9]?)
+            if (( EXIT_SIG_MIN <= exit_code && exit_code < EXIT_SIG_MAX )); then
+                sig=$((exit_code - EXIT_SIG_MIN))
+                signame=$(kill -l $sig)
+                msg="$exit_code - $EXIT_SIG_MIN = $sig, SIG$signame"
+            fi
+            ;;
+
+        # Ref: /usr/include/sysexits.h
+        64)  msg='EX_USAGE: command line usage error' ;;
+        65)  msg='EX_DATAERR: data format error' ;;
+        66)  msg='EX_NOINPUT: cannot open input' ;;
+        67)  msg='EX_NOUSER: addressee unknown' ;;
+        68)  msg='EX_NOHOST: host name unknown' ;;
+        69)  msg='EX_UNAVAILABLE: service unavailable' ;;
+        70)  msg='EX_SOFTWARE: internal software error' ;;
+        71)  msg="EX_OSERR: system error (e.g., can't fork)" ;;
+        72)  msg='EX_OSFILE: critical OS file missing' ;;
+        73)  msg="EX_CANTCREAT: can't create (user) output file" ;;
+        74)  msg='EX_IOERR: input/output error' ;;
+        75)  msg='EX_TEMPFAIL: temp failure; user is invited to retry' ;;
+        76)  msg='EX_PROTOCOL: remote error in protocol' ;;
+        77)  msg='EX_NOPERM: permission denied' ;;
+        78)  msg='EX_CONFIG: configuration error' ;;
+        esac
+    fi
 
     if [ -n "$msg" ]; then
         printf '%s' "$msg";
@@ -789,6 +880,12 @@ preexec_invoke_exec () {
         "$(date +'%Y/%m/%d')" \
         "$YAK_START_SYMBOL" \
         "$BASH_COMMAND"
+
+    ###
+    # Store the last executed command in the pipeline.
+    # Used by exit code description proc, if cmd-specific codes interp is needed.
+    #
+    _YAK_LAST_COMMAND="$BASH_COMMAND"
 
     ###
     # Record the start time of the first command (e.g. if there are multiple
