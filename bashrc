@@ -183,6 +183,16 @@ function mkcd() {
     mkdir -p "$1" && cd "$1"
 }
 
+# Convenience function to clone a git repo and cd into it
+function clonecd() {
+    local output repo
+    output=$(git clone --progress "$@" 2>&1 | tee /dev/tty)
+    repo=$(echo "$output" | sed -n "s/^Cloning into '\\([^']\\+\\)'...$/\\1/p")
+    if [ -n "$repo" ]; then
+        cd "$repo"
+    fi
+}
+
 
 # Make a new virtualenv with the name of the current directory.
 # Also sets the virtualenv project
