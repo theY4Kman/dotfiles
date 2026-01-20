@@ -390,11 +390,18 @@ bind 'set completion-prefix-display-length 2'
 # Displays the current activated virtualenv
 __venv_ps1 ()
 {
+    local venv_name;
     if [ -n "${VIRTUAL_ENV}" ]; then
         if [ -z "${PYTHON_VERSION+x}" ]; then
-            PYTHON_VERSION="$(python -V 2>&1 | awk '{print $NF}')"
-        fi
-        echo [${VIRTUAL_ENV##*[/\\]}${PYTHON_VERSION:+" :: $PYTHON_VERSION"}]
+            PYTHON_VERSION="$(python -V 2>&1 | awk '{print $NF}')";
+        fi;
+        if [[ "$VIRTUAL_ENV" == *"/.venv" ]] then
+            venv_name="${VIRTUAL_ENV%%/.venv}";
+            venv_name="${venv_name##*[/\\]}";
+        else
+            venv_name="${VIRTUAL_ENV##*[/\\]}";
+        fi;
+        echo [${venv_name}${PYTHON_VERSION:+" :: $PYTHON_VERSION"}];
     fi
 }
 
