@@ -12,3 +12,6 @@ autocmd BufNewFile,BufRead poetry.lock set syntax=toml
 colorscheme desert
 syntax on
 set number
+
+nnoremap p p`]
+nnoremap P P`]
